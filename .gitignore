@@ -24,3 +24,6 @@ node_modules/
 
 .vercel
 .env*
+
+# treg SEO adapter — local credential config, never committed
+.agents/skills/treg-seo/.treg/
