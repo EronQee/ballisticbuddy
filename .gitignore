@@ -27,3 +27,7 @@ node_modules/
 
 # treg SEO adapter — local credential config, never committed
 .agents/skills/treg-seo/.treg/
+
+# Temporary things
+.temporary
+
