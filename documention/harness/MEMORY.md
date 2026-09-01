@@ -42,6 +42,14 @@
 - `pnpm build` 后 `postbuild` 会跑 `next-sitemap`（见 `next-sitemap.config.cjs`）；
   新增路由后确认 sitemap 正确收录，别只信 `next build` 的产物。
 - Next.js 缓存：改了内容本地看不到效果先怀疑缓存（`next start` 场景），别急着改代码。
+- **`globals.css` 的 `html { opacity: 0 }` 主题门（2026-09-01，实锤踩坑）**：
+  `(frontend)/globals.css` 末尾有 `html { opacity: 0 }`，只有 `html[data-theme='light'|'dark']`
+  才恢复显示（防主题闪烁的 trick）。任何**自带 `<html>` 的 route-group layout**
+  （如 `(preview)/layout.tsx`）若不设 `data-theme` 或不挂 `<InitTheme />`，
+  整个路由**永久隐形**。症状极具迷惑性：HTTP 200、DOM/文本完整、滚动条正常很长、
+  控制台 0 报错——就是全白。修复：`(preview)/layout.tsx` 的 `<html>` 加
+  `data-theme="light"`（静态预览路由够用；动态路由用 `<InitTheme />`）。
+  已有 CI 断言：`scripts/check-guardrails.mjs` check 2（html-theme-gate）。
 
 ## 数据模型/内容流坑
 
@@ -66,6 +74,19 @@
 - banned-terms 正则小心误报：按词边界或整词匹配，别裸用 `-match 'XXX'` 当证据。
 - PowerShell 里给 node 脚本传 `$` 要用单引号包 node -e 整段，或 `\`` 转义。
 - 脚本新增验证断言时，追加到 `scripts/check-guardrails.mjs`，不要只写在 agent 记忆里。
+
+## 调试/验证方法坑
+
+- **DOM 验证 ≠ 视觉正确（2026-09-01，ui-preview 白屏误判教训）**：
+  `opacity: 0` / `visibility: hidden` 的页面，`innerText`、`scrollHeight`、
+  元素存在性、控制台 0 报错**全部照常通过**——只查 DOM 会得出"页面正常"的错误结论。
+  判断"用户看到什么"必须断言**计算样式或像素**：playwright
+  `eval "getComputedStyle(document.documentElement).opacity"`，或直接 screenshot
+  给人看。排查"白屏/隐形"类问题时，第一条命令就该查 computed opacity。
+- **水合报错噪音 ≠ 根因**：浏览器插件（如 Trancy 注入 `trancy-version` 属性）会在
+  `<html>` 上触发 hydration mismatch 警告，且报错树可能指向无关路由（/admin/login）。
+  插件噪音先放一边；SSR HTML 完整 + 无头浏览器 DOM 正常时，优先对比"可见性层"
+  （CSS opacity/visibility/display），而不是追水合警告。
 
 ## 故障排查顺序（硬规则：先搜索，后苦干）
 
@@ -92,3 +113,6 @@
 ## 变更记录
 
 - 2026-09-01：从 ElevatoX 迁移记忆框架，清空 Strapi/SEO 具体内容，按 Payload/Next 重建基线。
+- 2026-09-01：/ui-preview 白屏调试——记录 `html{opacity:0}` 主题门坑（前端/构建坑）、
+  DOM≠视觉与水合噪音两条调试方法论（调试/验证方法坑）；guardrail 新增
+  html-theme-gate 断言（check 2）。

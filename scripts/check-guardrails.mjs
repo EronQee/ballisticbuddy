@@ -7,6 +7,10 @@
  * Checks:
  *  1. banned-terms — internal jargon must never appear on user-facing
  *                    surfaces (pages, metadata, seed content, copy).
+ *  2. html-theme-gate — any route-group layout that renders its own <html>
+ *                    must set data-theme or mount <InitTheme />, otherwise
+ *                    globals.css `html { opacity: 0 }` renders the whole
+ *                    route invisible (white screen with 200 + valid DOM).
  *
  * Usage: node scripts/check-guardrails.mjs [--dirs src]
  */
@@ -73,6 +77,42 @@ function checkBannedTerms(dirs) {
   return findings;
 }
 
+function checkHtmlThemeGate() {
+  const findings = [];
+  const appDir = path.join(ROOT, "src", "app");
+  if (!fs.existsSync(appDir)) return findings;
+
+  function walkLayouts(dir) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        if (/node_modules|\.next|\.git$/.test(full)) continue;
+        walkLayouts(full);
+      } else if (/^layout\.(ts|tsx|js|jsx)$/i.test(entry.name)) {
+        let text;
+        try {
+          text = fs.readFileSync(full, "utf8");
+        } catch {
+          continue;
+        }
+        if (!/<html[\s>]/.test(text)) continue;
+        if (!/data-theme\s*=/.test(text) && !/<InitTheme\b/.test(text)) {
+          findings.push({
+            file: path.relative(ROOT, full).replace(/\\/g, "/"),
+            line: null,
+            term: "<html> without data-theme/InitTheme",
+            reason:
+              "layout renders its own <html> but never sets data-theme; " +
+              "globals.css keeps `html { opacity: 0 }` and the whole route is invisible",
+          });
+        }
+      }
+    }
+  }
+  walkLayouts(appDir);
+  return findings;
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const dirsArg = args.find((a) => a.startsWith("--dirs="));
@@ -81,10 +121,11 @@ async function main() {
     : DEFAULT_DIRS;
 
   const banned = checkBannedTerms(dirs);
+  const themeGate = checkHtmlThemeGate();
 
-  const all = [...banned];
+  const all = [...banned, ...themeGate];
   if (all.length === 0) {
-    console.log("[guardrails] PASS — no banned terms on user-facing surfaces.");
+    console.log("[guardrails] PASS — no banned terms; all <html> layouts set the theme gate.");
     process.exit(0);
   }
 
