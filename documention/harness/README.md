@@ -5,7 +5,6 @@
 
 参考：nexu-io/harness-engineering-guide（四子系统模型）；Anthropic《Building Effective Agents》；
 Addy Osmani《Loop Engineering》；OpenAI《Harness Engineering》。
-源自 ElevatoX 项目 harness 体系（四子系统模型），按 BallisticBuddy 技术栈适配。
 
 ## 核心定义
 
@@ -49,7 +48,7 @@ BallisticBuddy 的 harness = 仓库里的 AGENTS.md + skills + 脚本/门禁 + �
 > **验证可读性硬规则**：agent 不得自行调用 Playwright 截图/像素验证做视觉结论——
 > 并非所有 agent 模型都是多模态的，截图对非多模态 agent 不可读。视觉验证必须用
 > 文本/DOM/`getComputedStyle` 数值断言，或交人工/明确标注的多模态 agent 看截图。
-> 详见 `documention/harness/MEMORY.md`（调试/验证方法坑）。
+> 详见 `documention/harness/procedural/troubleshooting.md`。
 
 ### 2. Skill / Tool System — 能力目录
 
@@ -66,19 +65,34 @@ Thin harness + thick skills。技能=工具+文档+行为规则的捆绑，按�
 规则：技能应聚焦（3-8 个能力）、有 SKILL.md 说明"何时用/怎么用/约束"、可独立测试。
 新技能上线前确认 `ask-matt` 能路由到它。
 
-### 3. Memory & Context — 三层记忆
+### 3. Memory & Context — 三层记忆（waku-agent 模型）
 
 | 概念 | 范围 | 本项目位置 |
 |---|---|---|
 | Context | 单次调用装配 | `src/app/` 页面 + `src/collections/` schema |
 | Session | 单次会话 | `.agents/skills/handoff/`（跨会话交接） |
-| **Memory（长期）** | 跨会话持久 | **`documention/harness/MEMORY.md`（长期记忆）+ `documention/progress/`（daily logs）** |
+| **Memory（长期）** | 跨会话持久 | **三层记忆目录（见下）+ `documention/progress/`（daily logs）** |
 
-双层记忆规则：
-- **daily logs**（`documention/progress/`）：每次 push 后必写，便宜、追加即可（AGENTS.md）。
-- **长期记忆**（`documention/harness/MEMORY.md`）：从 daily logs 提炼的可复用坑/规则，需要判断；发现新坑即写入，push 日志时顺带 curation。
+三层记忆（借鉴 waku-agent 的 semantic / episodic / procedural 架构，2026-09-03 起）：
 
-注意：AGENTS.md 是**声明式行为规范**（该怎么做），MEMORY.md 是**经验式事实**（发生了什么、什么会坑）。两者都进上下文，职责不同。
+| 层级 | 含义 | 位置 |
+|---|---|---|
+| **Semantic** | 持久事实："我知道什么" | `documention/harness/semantic/`（payload, frontend, i18n, content-model, deploy-ci, tooling） |
+| **Episodic** | 事件复盘："发生了什么" | `documention/harness/episodic/`（按事件+日期归档） |
+| **Procedural** | 行为规则："该怎么做" | `documention/harness/procedural/`（agent-behavior, troubleshooting, verification, new-page） |
+
+- 路由索引：`documention/harness/INDEX.md` — agent 按任务类型**按需加载**，不全量读取；
+  INDEX + agent-behavior + verification 为每次会话必加载。
+- daily logs（`documention/progress/`）：每次 push 后必写，便宜、追加即可（AGENTS.md §11）。
+- Consolidation：`node scripts/consolidate-memory.mjs`（**dry-run 建议器**，从 progress
+  扫描候选条目；永不自动写文件，curation 是人工/agent 编辑动作）。
+- 旧单文件 `MEMORY.md` 已于 2026-09-03 废弃（`MEMORY.md.deprecated`），禁止追加。
+
+注意：AGENTS.md 是**声明式行为规范**（该怎么做），记忆文件是**经验式事实**（发生了
+什么、什么会坑）。两者都进上下文，职责不同。
+
+**防污染硬规则**：semantic/procedural 文件只放提炼后的事实/规则，
+**禁止粘贴原始 progress log 段落**（Files/Validation/Deployment 等日志结构留在 progress/）。
 
 ### 4. Guardrails — 可执行门禁
 
@@ -95,7 +109,8 @@ Thin harness + thick skills。技能=工具+文档+行为规则的捆绑，按�
 
 ## 维护规则
 
-1. **新坑/教训 → 写 `documention/harness/MEMORY.md`**（不是只记在 progress 里）。
+1. **新坑/教训 → 查 `INDEX.md` 路由表，append 到对应 semantic/episodic/procedural
+   文件**（不是只记在 progress 里；没有匹配文件就新建并注册路由）。
 2. **新技能 → 遵循 `writing-great-skills`，并确认 `ask-matt` 能路由到它**。
 3. **新验证断言 → 进可执行脚本（guardrail / smoke），不要只写在 agent 记忆里**。
 4. **guardrail 只增不减**：移除需说明理由；被拒绝/告警的行为要记录，用于改进提示词。
@@ -104,3 +119,6 @@ Thin harness + thick skills。技能=工具+文档+行为规则的捆绑，按�
 ## 变更记录
 
 - 2026-09-01：从 ElevatoX 迁移核心 harness 体系并适配（Payload CMS + Next.js 技术栈）。
+- 2026-09-03：记忆重构为三层架构（semantic/episodic/procedural）+ INDEX.md 路由索引
+  + consolidation 建议器（dry-run only）。两条防污染约束：semantic 文件禁止粘贴
+  原始 progress log；consolidation 永不自动写文件。

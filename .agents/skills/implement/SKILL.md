@@ -24,7 +24,7 @@ review are separate, explicit gates (harness principle: never grade your own exa
 4. VERIFY  — run the full gate suite (below); iterate capped
 5. REVIEW  — /code-review (independent, adversarial)
 6. LOG     — commit + progress log (AGENTS.md)
-7. MEMORY  — write any reusable pitfall to documention/harness/MEMORY.md
+7. MEMORY  — write any reusable pitfall to documention/harness/ (route via INDEX.md)
 ```
 
 ## 1. Spec — Acceptance Criteria First
@@ -46,8 +46,8 @@ passes a baseline that was already failing proves nothing.
 - Make the smallest safe change. One bounded change at a time (easier to verify,
   easier to undo).
 - Use tests where possible, at pre-agreed seams.
-- Follow repository facts (AGENTS.md, MEMORY.md, existing code) — inspect
-  adjacent files/services before writing.
+- Follow repository facts (AGENTS.md, harness memory via INDEX.md, existing
+  code) — inspect adjacent files/services before writing.
 
 ## 4. Verify — The Gate Suite (mandatory)
 
@@ -80,9 +80,12 @@ self-approve: the reviewer is a separate pass over the diff (standards + spec).
 ## 7. Memory Curation
 
 If you hit something a future agent would hit again (a Payload quirk, a cache
-gotcha, a schema trap), append it to `documention/harness/MEMORY.md` — even a
-one-line note. This is what turns the harness from documentation into a
-learning system. Check existing MEMORY entries first to avoid duplicates.
+gotcha, a schema trap), append it to the matching memory file under
+`documention/harness/{semantic,episodic,procedural}/` — route via
+`documention/harness/INDEX.md` first; never paste raw log sections; never
+append to `MEMORY.md.deprecated`. Even a one-line note turns the harness from
+documentation into a learning system. Check existing entries first to avoid
+duplicates.
 
 ## Stop Conditions
 

@@ -1,3 +1,11 @@
+# [已废弃] BallisticBuddy Long-Term Engineering Memory
+
+> **本文件已于 2026-09-03 废弃，内容已全部拆分进三层记忆（见 INDEX.md）。**
+> 禁止往本文件追加任何内容。新坑写入规则见 `INDEX.md` 的「新坑写入规则」。
+> 保留本文件仅为历史归档。
+
+---
+
 # BallisticBuddy Long-Term Engineering Memory
 
 > 跨会话的工程经验：踩过的坑、验证过的结论、必须遵守的硬规则。
@@ -72,6 +80,35 @@
   localized），生产/构建不跑 migration 就报 `relation "posts_locales" does not exist`。
   分阶段：A 期只上 next-intl 路由/字典，`payload.config.ts` **不挂** `localization`；
   B 期挂上时先在 staging 跑 `pnpm payload migrate:create` + `migrate`。
+  **B 期已落地并已对 Neon 库执行迁移**（迁移文件 `src/migrations/20260902_081821_localization.ts`）。
+- **`payload migrate:create` 的 create-vs-rename 确认无法非交互跳过**（2026-09-02）：
+  这些 prompt 来自 drizzle-kit `api.js` 里 bundled 的 hanji 原始 TTY 组件，没有 flag
+  （`--force-accept-warning` 只跳过 blank-migration 确认，不覆盖这个）。非 TTY 管道
+  喂 `\n` 只能应答第一个（hanji 在同一 chunk 里丢掉后续按键）。**且注意**：Payload 的
+  `requireDrizzleKit()` 解析到的是 `node_modules/.pnpm/drizzle-kit@*/node_modules/drizzle-kit/api.js`
+  （CJS），**不是 `api.mjs`**——改错文件=白改。本地一次性 workaround：备份→断硬链接→
+  在 Terminal 构造器加 `if(!this.stdin.isTTY){setImmediate(()=>keypress("",{name:"return"}))}`
+  →跑生成→还原原文件。新站空库可放心接受默认「create column」。
+- **`localization.ts` 的 locale list 要 `as const`**（2026-09-02，tsc 实锤）：
+  不 `as const` 则 `locale.code` 拓宽成 `string`，`Locale = typeof routing.locales[number]`
+  塌成 `string`，`getPayloadLocale()` 返回 `Promise<string>`，payload `find` 的
+  `locale` 参数（要求 `'en'|'pt'|...|'all'`）直接 TS2322。Payload 侧用
+  `locales: [...localization.locales]` 把 readonly 元组展开成可变数组再喂 config。
+- **面向 payload 查询的 locale 要收窄成 PayloadLocale**：next-intl `getLocale()` 返回
+  `string`，直接传 payload.find 会 TS 报错；用 `src/i18n/getPayloadLocale.ts` 统一收窄。
+- **proxy matcher 会劫持 `[locale]` 之外的页面路由**（2026-09-03 实锤）：
+  `src/proxy.ts` 的 matcher（next-intl 官方推荐式排除：`api|_next|_vercel|admin|next|.*\..*`）
+  不认识 `(preview)` 这类 route group 页面；`localePrefix: 'as-needed'` 下 `/ui-preview`
+  被改写成默认 locale 的 `/en/ui-preview` → 落进 `[locale]/[slug]` 兜底 → 按 slug 查
+  Payload 失败 → 404（页面文件本身没问题，middleware 先执行，轮不到它渲染）。
+  **硬规则：`(preview)` 组每新增一个预览路由，必须同步把路径加进 proxy.ts matcher
+  排除列表**（当前已排除：`ui-preview|uitest|uitest2`）。
+- **硬规则：新建页面文案必须从第一行就走字典**（2026-09-03）：`[locale]` 下的
+  新页面/组件直接用 `useTranslations`/`getTranslations`，并同步往
+  `messages/*.json`（6 locale）加 key，**不要先硬编码后提取**。存量页面全部
+  硬编码（0 处 t()，字典为空），提取债记在 i18n B 期 Pending；新代码再硬编码
+  会放大回填成本。CMS 正文不在此列——走 Payload `localized` 字段按 locale 录入，
+  不进字典。
 
 ## 数据模型/内容流坑
 - 内容以 Payload collections 为准（`src/collections/`），**不要仅凭本地 seed 或代码
@@ -151,3 +188,14 @@
   （en/pt/ar-rtl/es/fr/ru，单一事实来源 `src/i18n/localization.ts` 派生路由）。
   新增 i18n 坑一节：plugin 必挂、root-params 进不了 middleware、PS UTF8 BOM、
   Payload localization 需 migration。
+- 2026-09-02：i18n B 期落地——Payload Localization（`localization` + 字段级
+  `localized: true` + 迁移 `20260902_081821_localization.ts` 已对 Neon 执行）、
+  前台查询按 locale 取内容（`getPayloadLocale` 收窄类型）、sitemap hreflang
+  （pages/posts-sitemap route handler 按 6 locale 枚举 + x-default）、Header/Footer/
+  CMSLink/Card/Pagination/Search 换 `createNavigation` 的 Link/useRouter。
+  B 期 4 产出 Payload REST 翻译管线文档 `documention/plans/ongoing/n8n-payload-translation-api.md`。
+  新坑：migrate:create 交互确认 workaround、`api.js` 非 `api.mjs`、locale `as const`。
+- 2026-09-03：修复 proxy matcher 劫持预览路由（/ui-preview 404）——matcher 排除
+  `ui-preview|uitest|uitest2`，沉淀「(preview) 新路由须同步 matcher」硬规则；
+  新增「新页面文案必须直接走字典（t() + messages/*.json）」硬规则，防硬编码后
+  提取欠债。

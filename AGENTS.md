@@ -65,16 +65,23 @@ Before high-risk execution, provide:
 ### 7.5) Harness system (how this agent is wrapped into a reliable loop)
 - Harness blueprint: `documention/harness/README.md` — the four subsystems
   (agentic loop, skills, memory, guardrails) mapped to this repo's assets.
-- **Long-term engineering memory: `documention/harness/MEMORY.md`** — reusable
-  pitfalls and hard rules distilled from `documention/progress/` (daily logs).
-  Before doing anything that smells like a known trap (Payload schema migration,
-  `.next` cache, draft/publish, media revalidation, etc.), read the relevant MEMORY section.
+- **Long-term engineering memory: `documention/harness/INDEX.md`** — routing index
+  over the three-layer memory (semantic/ persistent facts, episodic/ incident
+  retrospectives, procedural/ behavior rules) distilled from
+  `documention/progress/` (daily logs). INDEX + `procedural/agent-behavior.md` +
+  `procedural/verification.md` are must-load each session; load other files on
+  demand by task type. Before doing anything that smells like a known trap
+  (Payload schema migration, `.next` cache, i18n/proxy, draft/publish, etc.),
+  read the relevant semantic file via the INDEX routing table.
 - Standard implementation loop: `.agents/skills/implement/SKILL.md` — spec →
   baseline → implement → gate suite → independent review → log → memory curation.
 - Guardrail gate (deterministic, CI-enforced): `node scripts/check-guardrails.mjs`
   — banned internal terms on user-facing surfaces.
 - Maintenance rules:
-  1. New pitfall/lesson → append to `documention/harness/MEMORY.md` (not only progress logs).
+  1. New pitfall/lesson → append to the matching file under
+     `documention/harness/{semantic,episodic,procedural}/` per the INDEX.md
+     routing table (not only progress logs). Never paste raw progress-log
+     sections into memory files; never append to `MEMORY.md.deprecated`.
   2. New skill → follow `.agents/skills/writing-great-skills` and ensure
      `.agents/skills/ask-matt` can route to it.
   3. New verification assertion → add to `scripts/check-guardrails.mjs` (or a
