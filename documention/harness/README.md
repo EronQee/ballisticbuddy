@@ -46,6 +46,11 @@ BallisticBuddy 的 harness = 仓库里的 AGENTS.md + skills + 脚本/门禁 + �
 | 迭代封顶 | implement skill 内置（无进展=失败信号，升级人工） |
 | 暂停/恢复 | `.agents/skills/handoff/SKILL.md` + `documention/plans/ongoing/` |
 
+> **验证可读性硬规则**：agent 不得自行调用 Playwright 截图/像素验证做视觉结论——
+> 并非所有 agent 模型都是多模态的，截图对非多模态 agent 不可读。视觉验证必须用
+> 文本/DOM/`getComputedStyle` 数值断言，或交人工/明确标注的多模态 agent 看截图。
+> 详见 `documention/harness/MEMORY.md`（调试/验证方法坑）。
+
 ### 2. Skill / Tool System — 能力目录
 
 Thin harness + thick skills。技能=工具+文档+行为规则的捆绑，按需加载。

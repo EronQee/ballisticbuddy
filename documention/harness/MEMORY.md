@@ -87,6 +87,14 @@
   `<html>` 上触发 hydration mismatch 警告，且报错树可能指向无关路由（/admin/login）。
   插件噪音先放一边；SSR HTML 完整 + 无头浏览器 DOM 正常时，优先对比"可见性层"
   （CSS opacity/visibility/display），而不是追水合警告。
+- **Playwright 截图不得由 agent 自行调用（2026-09-02，harness 硬规则）**：截图/像素
+  验证输出的是图像，而**并非所有 agent 模型都是多模态的**——非多模态 agent 拿不到
+  截图里的视觉结论，截图只对"能看图的人/多模态 agent"有意义。因此视觉验证一律：
+  1. 优先用**文本断言**验证（DOM + `getComputedStyle` 计算样式、元素几何 `getBoundingClientRect`
+     的数值、文本内容），agent 能直接读结果；
+  2. 必须看像素时，交给**用户人工**或**明确标注的多模态 agent** 看截图，agent 只负责产出截图路径。
+  这条不是性能问题，是**可验证性契约**：验证结果必须是所有 agent 都能读取的文本/数值，
+  不能是只对部分模型可见的图像。
 
 ## 故障排查顺序（硬规则：先搜索，后苦干）
 
@@ -116,3 +124,5 @@
 - 2026-09-01：/ui-preview 白屏调试——记录 `html{opacity:0}` 主题门坑（前端/构建坑）、
   DOM≠视觉与水合噪音两条调试方法论（调试/验证方法坑）；guardrail 新增
   html-theme-gate 断言（check 2）。
+- 2026-09-02：新增 harness 硬规则——Playwright 截图不得由 agent 自行调用（非多模态
+  agent 无法读图），视觉验证改用文本/DOM/computed-style 断言，或交人工/多模态 agent。
