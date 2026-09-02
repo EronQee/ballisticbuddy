@@ -13,6 +13,7 @@ import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
+import localization from '@/i18n/localization'
 import { getServerSideURL } from './utilities/getURL'
 
 const filename = fileURLToPath(import.meta.url)
@@ -63,6 +64,11 @@ export default buildConfig({
     },
     push: process.env.NODE_ENV !== 'production',
   }),
+  localization: {
+    locales: [...localization.locales],
+    defaultLocale: localization.defaultLocale,
+    fallback: true,
+  },
   collections: [Pages, Posts, Media, Categories, Users],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],

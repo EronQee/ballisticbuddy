@@ -8,6 +8,15 @@ module.exports = {
   siteUrl: SITE_URL,
   generateRobotsTxt: true,
   exclude: ['/posts-sitemap.xml', '/pages-sitemap.xml', '/*', '/posts/*'],
+  alternateRefs: [
+    { href: `${SITE_URL}/`, hreflang: 'en' },
+    { href: `${SITE_URL}/pt`, hreflang: 'pt' },
+    { href: `${SITE_URL}/ar`, hreflang: 'ar' },
+    { href: `${SITE_URL}/es`, hreflang: 'es' },
+    { href: `${SITE_URL}/fr`, hreflang: 'fr' },
+    { href: `${SITE_URL}/ru`, hreflang: 'ru' },
+    { href: `${SITE_URL}/`, hreflang: 'x-default' },
+  ],
   robotsTxtOptions: {
     policies: [
       {

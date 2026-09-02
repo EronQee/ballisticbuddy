@@ -13,6 +13,9 @@ export const { Link, redirect, usePathname, useRouter, getPathname } = createNav
 
 export type Locale = (typeof routing.locales)[number]
 
+export type { LocaleCode } from './localization'
+
 export function getLocaleDir(locale: string): 'ltr' | 'rtl' {
-  return localization.locales.find((l) => l.code === locale)?.rtl ? 'rtl' : 'ltr'
+  const entry = localization.locales.find((l) => l.code === locale)
+  return entry && 'rtl' in entry && entry.rtl ? 'rtl' : 'ltr'
 }

@@ -5,6 +5,7 @@ import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
+import { getPayloadLocale } from '@/i18n/getPayloadLocale'
 import React from 'react'
 import PageClient from './page.client'
 
@@ -12,12 +13,14 @@ export const dynamic = 'force-static'
 export const revalidate = 600
 
 export default async function Page() {
+  const locale = await getPayloadLocale()
   const payload = await getPayload({ config: configPromise })
 
   const posts = await payload.find({
     collection: 'posts',
     depth: 1,
     limit: 12,
+    locale,
     overrideAccess: false,
     select: {
       title: true,
