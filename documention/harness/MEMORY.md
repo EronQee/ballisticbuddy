@@ -51,8 +51,29 @@
   `data-theme="light"`（静态预览路由够用；动态路由用 `<InitTheme />`）。
   已有 CI 断言：`scripts/check-guardrails.mjs` check 2（html-theme-gate）。
 
-## 数据模型/内容流坑
+## i18n / next-intl 坑
 
+- **next-intl 必须挂 plugin**（2026-09-02，实锤踩坑）：不配
+  `createNextIntlPlugin()`（`next.config.ts`），production 下 `request.ts` 走 stub，
+  构建报 `Couldn't find next-intl config file`。next.config 组合顺序：
+  `export default withNextIntl(withPayload(nextConfig, ...))`。
+- **`next/root-params` 不能进 middleware bundle**（2026-09-02）：next-intl 的
+  `createMiddleware`/`createNavigation` 会把 `src/i18n/request.ts` 连带打进 middleware
+  包，`request.ts` 若 `import * as rootParams from 'next/root-params'`，Turbopack 构建报
+  `'next/root-params' can only be used inside the App Directory`。**改用
+  `getRequestConfig(async ({ requestLocale }) => ...)`**（官方 examples/localization
+  同款），middleware 兼容，静态渲染靠 `[locale]` layout 的 `generateStaticParams`。
+  代价：牺牲自动静态渲染，需确认页面无 RSC 内 `useTranslations` 时才可全静态。
+- **PowerShell `Set-Content -Encoding UTF8` 写 JSON 带 BOM**：Turbopack 报
+  `Unable to make a module from invalid JSON`（文件头 0xEFBBBF）。写 JSON 一律用
+  `[System.IO.File]::WriteAllText(path, content, UTF8Encoding($false))` 或本项目 read/edit 工具。
+- **Payload `localization: true` 是 DB schema 变更**（2026-09-02 实测）：开启后
+  innerText 的 `*_locales` 表立即在所有 `find` join 中出现（seo 插件 meta 字段默认
+  localized），生产/构建不跑 migration 就报 `relation "posts_locales" does not exist`。
+  分阶段：A 期只上 next-intl 路由/字典，`payload.config.ts` **不挂** `localization`；
+  B 期挂上时先在 staging 跑 `pnpm payload migrate:create` + `migrate`。
+
+## 数据模型/内容流坑
 - 内容以 Payload collections 为准（`src/collections/`），**不要仅凭本地 seed 或代码
   fallback 推断线上数据状态**。查线上用 Payload REST/GraphQL API 或 admin。
 - Payload `pages` 的 layout builder blocks 与前端渲染的 block 组件一一对应；
@@ -126,3 +147,7 @@
   html-theme-gate 断言（check 2）。
 - 2026-09-02：新增 harness 硬规则——Playwright 截图不得由 agent 自行调用（非多模态
   agent 无法读图），视觉验证改用文本/DOM/computed-style 断言，或交人工/多模态 agent。
+- 2026-09-02：i18n A 期落地——next-intl 4.14.2 + `[locale]` 段 + proxy + 6 locale
+  （en/pt/ar-rtl/es/fr/ru，单一事实来源 `src/i18n/localization.ts` 派生路由）。
+  新增 i18n 坑一节：plugin 必挂、root-params 进不了 middleware、PS UTF8 BOM、
+  Payload localization 需 migration。
