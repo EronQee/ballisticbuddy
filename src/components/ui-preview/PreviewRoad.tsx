@@ -52,7 +52,7 @@ Once approved, we proceed with the launch and offer ongoing post-launch support 
 function StarIcon({ rotation }: { rotation: number }) {
   return (
     <div
-      className="rd-star-container"
+      className="workflow-card__star"
       style={{
         boxSizing: 'border-box',
         flex: '0 0 auto',
@@ -75,8 +75,8 @@ function StarIcon({ rotation }: { rotation: number }) {
           width: '100%',
           height: '100%',
           display: 'inline-block',
-          fill: 'var(--token-cf5aac01-3fc4-453a-a04f-c350255779b2, rgb(242, 103, 61))',
-          color: 'var(--token-cf5aac01-3fc4-453a-a04f-c350255779b2, rgb(242, 103, 61))',
+          fill: 'var(--color-accent)',
+          color: 'var(--color-accent)',
           flexShrink: 0,
         }}
       >
@@ -115,7 +115,7 @@ function WorkflowCard({ step }: { step: (typeof WORKFLOW_STEPS)[number] }) {
   return (
     <li
       ref={cardRef}
-      className="rd-card"
+      className="workflow-card"
       style={{
         boxSizing: 'border-box',
         flex: '0 0 auto',
@@ -128,7 +128,7 @@ function WorkflowCard({ step }: { step: (typeof WORKFLOW_STEPS)[number] }) {
       }}
     >
       <div
-        className="rd-card-inner"
+        className="workflow-card__inner"
         style={{
           boxSizing: 'border-box',
           placeContent: 'center flex-end',
@@ -154,7 +154,7 @@ function WorkflowCard({ step }: { step: (typeof WORKFLOW_STEPS)[number] }) {
       >
         {/* Card Header: Icon & Step Number */}
         <div
-          className="rd-card-header"
+          className="workflow-card__header"
           style={{
             placeContent: 'center flex-start',
             flex: '0 0 auto',
@@ -188,13 +188,13 @@ function WorkflowCard({ step }: { step: (typeof WORKFLOW_STEPS)[number] }) {
               opacity: 1,
             }}
           >
-            <p className="rd-preset-step">{step.id}</p>
+            <p className="eyebrow">{step.id}</p>
           </div>
         </div>
 
         {/* Card Body: Title and Description */}
         <div
-          className="rd-card-body"
+          className="workflow-card__body"
           style={{
             placeContent: 'center flex-start',
             flex: '0 0 auto',
@@ -227,7 +227,7 @@ function WorkflowCard({ step }: { step: (typeof WORKFLOW_STEPS)[number] }) {
               opacity: 1,
             }}
           >
-            <h4 className="rd-preset-title">{step.title}</h4>
+            <h4 className="card-title">{step.title}</h4>
           </div>
 
           <div
@@ -247,7 +247,7 @@ function WorkflowCard({ step }: { step: (typeof WORKFLOW_STEPS)[number] }) {
               opacity: 1,
             }}
           >
-            <p className="rd-preset-desc">{step.description}</p>
+            <p className="text-body">{step.description}</p>
           </div>
         </div>
       </div>
@@ -257,256 +257,37 @@ function WorkflowCard({ step }: { step: (typeof WORKFLOW_STEPS)[number] }) {
 
 export default function PreviewRoad() {
   return (
-    <>
-      <section
-        id="workflow"
-        className="rd-section"
-
-        data-framer-name="Work Flow"
-      >
-        {/* Sticky Left Content Section */}
-        <div
-          className="rd-sticky"
-
-          data-framer-name="Sticky"
-        >
-          {/* Label */}
-          <div className="rd-label" data-framer-name="Label">
-            <h2 className="rd-preset-label">How we build your road to success</h2>
-          </div>
-
-          {/* Header */}
-          <div className="rd-heading" data-framer-name="Header">
-            <h3 className="rd-preset-heading">
-              WE&apos;LL GUIDE YOU EVERY STEP OF THE WAY, FROM STRATEGY - EXECUTION
-            </h3>
-          </div>
-
-          {/* Message */}
-          <div className="rd-message" data-framer-name="Message">
-            <p className="rd-preset-desc">
-              From the spark of an idea to the fire of implementation, we&apos;re your trusted guide,
-              igniting your potential and illuminating the path forward. With deep industry
-              knowledge, we empower you to overcome challenges and seize opportunities.
-            </p>
-          </div>
+    <section id="workflow" className="workflow">
+      {/* Sticky Left Content Section */}
+      <div className="workflow__sticky">
+        {/* Label */}
+        <div className="workflow__label">
+          <h2 className="eyebrow">How we build your road to success</h2>
         </div>
 
-        {/* Right Cards List */}
-        <ol
-          className="rd-cards"
+        {/* Header */}
+        <div className="workflow__heading">
+          <h3 className="display-lg">
+            WE&apos;LL GUIDE YOU EVERY STEP OF THE WAY, FROM STRATEGY - EXECUTION
+          </h3>
+        </div>
 
-          data-framer-name="Cards"
-        >
-          {WORKFLOW_STEPS.map((step) => (
-            <WorkflowCard key={step.id} step={step} />
-          ))}
-        </ol>
-      </section>
+        {/* Message */}
+        <div className="workflow__message">
+          <p className="text-body">
+            From the spark of an idea to the fire of implementation, we&apos;re your trusted guide,
+            igniting your potential and illuminating the path forward. With deep industry
+            knowledge, we empower you to overcome challenges and seize opportunities.
+          </p>
+        </div>
+      </div>
 
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-.rd-section {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 48px;
-  padding: 240px 120px;
-  max-width: 1920px;
-  margin: 0 auto;
-  position: relative;
-  scroll-margin-top: 72px;
-  width: 100%;
-}
-
-.rd-sticky {
-  flex: 0 0 auto;
-  flex-flow: column;
-  gap: 12px;
-  overflow: hidden;
-  padding: 0px;
-  align-items: flex-start;
-  display: flex;
-  height: min-content;
-  position: sticky;
-  top: 120px;
-  width: 48%;
-  max-width: 680px;
-  will-change: transform;
-  z-index: 1;
-}
-
-.rd-label {
-  flex: 0 0 auto;
-  white-space: pre-wrap;
-  height: auto;
-  position: relative;
-  width: 100%;
-  word-break: break-word;
-  overflow-wrap: break-word;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  flex-shrink: 0;
-}
-
-.rd-heading {
-  flex: 0 0 auto;
-  white-space: pre-wrap;
-  height: auto;
-  position: relative;
-  width: 100%;
-  word-break: break-word;
-  overflow-wrap: break-word;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  flex-shrink: 0;
-}
-
-.rd-message {
-  flex: 0 0 auto;
-  white-space: pre-wrap;
-  height: auto;
-  position: relative;
-  width: 100%;
-  word-break: break-word;
-  overflow-wrap: break-word;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  flex-shrink: 0;
-}
-
-.rd-cards {
-  flex: 1 1 0%;
-  flex-flow: column;
-  gap: 72px;
-  list-style: none;
-  margin: 0px;
-  overflow: visible;
-  padding: 0px;
-  align-items: flex-end;
-  display: flex;
-  height: min-content;
-  position: relative;
-  width: 50%;
-}
-
-.rd-preset-label {
-  font-family: 'Montserrat', sans-serif;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 20px;
-  letter-spacing: 0.1em;
-  line-height: 1.5em;
-  text-align: left;
-  text-transform: uppercase;
-  color: var(--token-cf5aac01-3fc4-453a-a04f-c350255779b2, rgb(242, 103, 61));
-  margin: 0;
-  padding: 0;
-}
-
-.rd-preset-heading {
-  font-family: 'Montserrat', sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 58px;
-  letter-spacing: 0em;
-  text-transform: none;
-  line-height: 1.2em;
-  text-align: left;
-  color: var(--token-08b0c0ab-26ee-4445-9737-2a35adb2438a, rgb(3, 3, 3));
-  margin: 0;
-  padding: 0;
-}
-
-.rd-preset-desc {
-  font-family: 'Montserrat', sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  letter-spacing: 0em;
-  text-transform: none;
-  line-height: 2em;
-  text-align: left;
-  color: var(--token-08b0c0ab-26ee-4445-9737-2a35adb2438a, rgb(3, 3, 3));
-  margin: 0;
-  padding: 0;
-}
-
-.rd-preset-step {
-  font-family: 'Montserrat', sans-serif;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 20px;
-  letter-spacing: 0.1em;
-  line-height: 1.5em;
-  text-transform: uppercase;
-  text-align: start;
-  color: var(--token-cf5aac01-3fc4-453a-a04f-c350255779b2, rgb(242, 103, 61));
-  margin: 0;
-  padding: 0;
-}
-
-.rd-preset-title {
-  font-family: 'Montserrat', sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 30px;
-  letter-spacing: 0em;
-  text-transform: none;
-  line-height: 1.5em;
-  text-align: start;
-  color: var(--token-08b0c0ab-26ee-4445-9737-2a35adb2438a, rgb(3, 3, 3));
-  margin: 0;
-  padding: 0;
-}
-
-@media (max-width: 1024px) {
-  .rd-section {
-    flex-direction: column;
-    padding: 120px 32px;
-    gap: 64px;
-  }
-  .rd-sticky {
-    position: relative;
-    top: 0px;
-    width: 100%;
-    max-width: 100%;
-  }
-  .rd-cards {
-    width: 100%;
-    align-items: stretch;
-  }
-  .rd-card {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-  .rd-preset-heading {
-    font-size: 38px;
-  }
-}
-
-@media (max-width: 640px) {
-  .rd-section {
-    padding: 80px 20px;
-  }
-  .rd-card-inner {
-    padding: 32px 24px;
-  }
-  .rd-preset-heading {
-    font-size: 28px;
-  }
-  .rd-preset-title {
-    font-size: 22px;
-  }
-}
-`,
-        }}
-      />
-    </>
+      {/* Right Cards List */}
+      <ol className="workflow__cards">
+        {WORKFLOW_STEPS.map((step) => (
+          <WorkflowCard key={step.id} step={step} />
+        ))}
+      </ol>
+    </section>
   )
 }

@@ -1,11 +1,8 @@
 import React from 'react'
 
-import PreviewGlobalStyles from '@/components/ui-preview/PreviewGlobalStyles'
-
 export default function UiTestPage() {
   return (
     <>
-      <PreviewGlobalStyles />
       <div
         style={{
           background: '#3b82f6',

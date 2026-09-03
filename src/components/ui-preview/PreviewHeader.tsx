@@ -2,111 +2,6 @@
 
 import { useState } from 'react'
 
-const EmbeddedStyles = () => (
-  <style>{`
-    :root {
-      --token-black: #030303;
-      --token-bg: #f7f7f7;
-      --token-orange: rgb(242, 103, 61);
-      --framer-font-family: 'Montserrat', sans-serif;
-    }
-
-    /* Link Hover Effects */
-    .framer-nav-link {
-      font-family: 'Montserrat', sans-serif;
-      font-size: clamp(36px, 5.5vw, 82px);
-      font-weight: 600;
-      line-height: 1.2em;
-      color: var(--token-black);
-      text-decoration: none;
-      transition: color 0.25s cubic-bezier(0.44, 0, 0.56, 1);
-      display: inline-block;
-      user-select: none;
-    }
-
-    .framer-nav-link:hover {
-      color: var(--token-orange);
-    }
-
-    .framer-contact-link {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 16px;
-      font-weight: 400;
-      line-height: 2em;
-      color: var(--token-black);
-      text-decoration: none;
-      transition: color 0.25s cubic-bezier(0.44, 0, 0.56, 1);
-    }
-
-    .framer-contact-link:hover {
-      color: var(--token-orange);
-      text-decoration: underline;
-    }
-
-    /* Social Icon Button Hover */
-    .framer-social-btn {
-      width: 40px;
-      height: 40px;
-      background-color: var(--token-orange);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.25s ease, opacity 0.25s ease;
-      cursor: pointer;
-      text-decoration: none;
-    }
-
-    .framer-social-btn:hover {
-      transform: translateY(-2px);
-      opacity: 0.9;
-    }
-
-    /* Smooth transition for menu expansion */
-    .framer-menu-content {
-      transition: opacity 0.35s ease, transform 0.35s ease;
-    }
-
-    /* Menu overlay - mirrors the original Framer menu layout while staying out of document flow */
-    .framer-menu-overlay {
-      box-sizing: border-box;
-      -webkit-font-smoothing: inherit;
-      align-content: center;
-      align-items: center;
-      display: flex;
-      flex: none;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      gap: 240px;
-      height: min-content;
-      justify-content: center;
-      overflow: visible;
-      padding: 24px 0 48px;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      width: 100%;
-      min-height: 600px;
-      opacity: 1;
-      transform: perspective(1200px);
-      transform-origin: 50% 50% 0px;
-      background-color: var(--token-bg, #f7f7f7);
-      z-index: 50;
-    }
-
-    @media (max-width: 1024px) {
-      .framer-menu-overlay {
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: flex-start;
-        gap: 48px;
-        padding: 24px 24px 48px;
-      }
-    }
-  `}</style>
-)
-
 const LogoSvg = () => (
   <svg className="block w-full h-full" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
     <rect x="2" y="2" width="16" height="16" rx="2" fill="currentColor" />
@@ -145,75 +40,44 @@ export default function PreviewHeader() {
 
   return (
     <div
-      className="w-full bg-[#f7f7f7] flex flex-col items-center relative font-['Montserrat',sans-serif]"
+      className="w-full bg-[#f7f7f7] flex flex-col items-center relative"
       style={{ padding: '12px 0' }}
     >
-      <EmbeddedStyles />
-
       {/* Main Container Envelope */}
       <div className="w-full max-w-[1920px] flex flex-col items-center justify-start relative">
         {/* Top Navigation Bar Header */}
-        <div
-          className="framer-lbrz3e w-full flex flex-row items-center justify-between py-3 relative"
-          style={{
-            boxSizing: 'border-box',
-            WebkitFontSmoothing: 'inherit',
-            overflow: 'visible',
-            height: 'min-content',
-          }}
-        >
+        <div className="site-header-bar">
           {/* Brand Logo & Title Container */}
-          <div
-            className="framer-afurnk flex flex-row items-end gap-3"
-            style={{
-              boxSizing: 'border-box',
-              WebkitFontSmoothing: 'inherit',
-              overflow: 'visible',
-              height: 'min-content',
-              width: 'min-content',
-            }}
-          >
+          <div className="site-header-brand">
             {/* Logo Link */}
             <a
-              className="framer-vbln58 block relative w-[25px] h-[25px] shrink-0 fill-black color-black no-underline"
+              className="site-header-logo"
               href="https://roman24.framer.website/"
               aria-label="ROMANXXIV Logo"
             >
-              <div className="svgContainer w-full h-full">
+              <div className="w-full h-full">
                 <LogoSvg />
               </div>
             </a>
 
             {/* Brand Title Heading */}
-            <div className="framer-cgmxim flex flex-col justify-start shrink-0 relative">
-              <h6 className="framer-text m-0 p-0 text-[16px] font-normal leading-[1.2em] text-black tracking-normal">
-                <a
-                  className="framer-text cursor-pointer no-underline text-black hover:text-[#f2673d] transition-colors duration-250"
-                  href="https://roman24.framer.website/"
-                >
-                  ROMANXXIV
-                </a>
+            <div className="site-header-title">
+              <h6>
+                <a href="https://roman24.framer.website/">ROMANXXIV</a>
               </h6>
             </div>
           </div>
 
-          {/* Styled Framer Menu Toggle Button with 3 Animated Orange Bars */}
+          {/* Menu Toggle Button with 3 Animated Orange Bars */}
           <button
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle Menu"
             tabIndex={0}
-            className="framer-udayfc relative cursor-pointer border-0 bg-transparent p-0 overflow-hidden outline-none w-[35px] h-[35px] shrink-0"
-            style={{
-              boxSizing: 'border-box',
-              WebkitFontSmoothing: 'inherit',
-              fontSize: '12px',
-              fontFamily: 'sans-serif',
-              aspectRatio: '1 / 1',
-            }}
+            className="nav-burger"
           >
             {/* Top Bar */}
             <div
-              className="framer-1m94cl9 absolute h-[5px] bg-[#f2673d] rounded-[10px] transition-all duration-300 ease-in-out"
+              className="nav-burger-bar nav-burger-bar--top"
               style={
                 isOpen
                   ? {
@@ -234,7 +98,7 @@ export default function PreviewHeader() {
 
             {/* Middle Bar */}
             <div
-              className="framer-2s1zjo absolute h-[5px] bg-[#f2673d] rounded-[10px] transition-all duration-300 ease-in-out"
+              className="nav-burger-bar nav-burger-bar--middle"
               style={
                 isOpen
                   ? {
@@ -255,7 +119,7 @@ export default function PreviewHeader() {
 
             {/* Bottom Bar */}
             <div
-              className="framer-688a84 absolute h-[5px] bg-[#f2673d] rounded-[10px] transition-all duration-300 ease-in-out"
+              className="nav-burger-bar nav-burger-bar--bottom"
               style={
                 isOpen
                   ? {
@@ -277,32 +141,32 @@ export default function PreviewHeader() {
         </div>
 
         {isOpen && (
-          <div className="framer-menu-overlay framer-menu-content">
+          <div className="nav-overlay">
             {/* Left Nav Stack */}
             <div className="flex-none w-auto">
               <nav className="flex flex-col gap-3 items-start justify-start p-0">
                 <div>
-                  <a href="./about" className="framer-nav-link">
+                  <a href="./about" className="nav-overlay-link">
                     ABOUT
                   </a>
                 </div>
                 <div>
-                  <a href="./blog" className="framer-nav-link">
+                  <a href="./blog" className="nav-overlay-link">
                     BLOG
                   </a>
                 </div>
                 <div>
-                  <a href="./services" className="framer-nav-link">
+                  <a href="./services" className="nav-overlay-link">
                     SERVICES
                   </a>
                 </div>
                 <div>
-                  <a href="./404" className="framer-nav-link">
+                  <a href="./404" className="nav-overlay-link">
                     404 PAGE
                   </a>
                 </div>
                 <div>
-                  <a href="./styleguide" className="framer-nav-link">
+                  <a href="./styleguide" className="nav-overlay-link">
                     STYLE GUIDE
                   </a>
                 </div>
@@ -311,7 +175,7 @@ export default function PreviewHeader() {
                     href="https://artechwebagency.lemonsqueezy.com/checkout/buy/35c14280-fe59-46c4-b020-3d3086657832?logo=0&discount=0"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="framer-nav-link"
+                    className="nav-overlay-link"
                   >
                     BUY TEMPLATE
                   </a>
@@ -327,7 +191,7 @@ export default function PreviewHeader() {
                   <strong className="font-bold">Phone</strong>
                 </p>
                 <p className="text-[16px] leading-[2em] font-normal">
-                  <a href="tel:12535555555" className="framer-contact-link">
+                  <a href="tel:12535555555" className="nav-overlay-contact">
                     +1 (253) 555 5555
                   </a>
                 </p>
@@ -343,7 +207,7 @@ export default function PreviewHeader() {
                     href="mailto:contact@roman24.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="framer-contact-link"
+                    className="nav-overlay-contact"
                   >
                     contact@roman24.com
                   </a>
@@ -360,7 +224,7 @@ export default function PreviewHeader() {
                     href="https://www.google.com/maps/dir//Seattle,+WA/@47.6131549,-122.5072183,11z/data=!4m8!4m7!1m0!1m5!1m1!1s0x5490102c93e83355:0x102565466944d59a!2m2!1d-122.3328481!2d47.6061389?entry=ttu"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="framer-contact-link"
+                    className="nav-overlay-contact"
                   >
                     24 Roman Street Seattle, WA 98106
                   </a>
@@ -374,7 +238,7 @@ export default function PreviewHeader() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="LinkedIn Link"
-                  className="framer-social-btn"
+                  className="nav-overlay-social"
                 >
                   <LinkedinIcon />
                 </a>
@@ -384,7 +248,7 @@ export default function PreviewHeader() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Facebook Link"
-                  className="framer-social-btn"
+                  className="nav-overlay-social"
                 >
                   <FacebookIcon />
                 </a>
@@ -394,7 +258,7 @@ export default function PreviewHeader() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram Link"
-                  className="framer-social-btn"
+                  className="nav-overlay-social"
                 >
                   <InstagramIcon />
                 </a>
@@ -404,7 +268,7 @@ export default function PreviewHeader() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Telegram Link"
-                  className="framer-social-btn"
+                  className="nav-overlay-social"
                 >
                   <TelegramIcon />
                 </a>

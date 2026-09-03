@@ -6,7 +6,7 @@
 export default function PreviewPricing() {
   return (
     <div
-      className="pp-blur"
+      className="pricing-overlay"
       tabIndex={0}
       style={{
         boxSizing: 'border-box',

@@ -5,7 +5,7 @@ import '../(frontend)/globals.css'
 
 export const metadata: Metadata = {
   title: 'UI 组件预览 — BallisticBuddy',
-  description: '从 Framer 模板还原的首页组件预览',
+  description: '首页组件视觉预览',
   robots: { index: false, follow: false },
 }
 
