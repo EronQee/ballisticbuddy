@@ -40,3 +40,44 @@
 - `framer-motion` 为纯前端依赖，next build 会正常打包。
 - 已知待办：其余组件动效统一到 framer-motion（About/Services 手写 scroll listener 性能、
   Header 退场动画、Testimonials layout 过渡、统一动效常量）——用户已确认用 framer-motion 统一，待下轮实施。
+
+## 2026-09-03 — commit 7706ce5 (branch `feat/i18n-next-intl-a`, pushed to origin)
+
+### Scope
+`/ui-preview` 页面全局 CSS 蒸馏：全部组件内联 `<style>` 收敛进全局样式表，去除
+framer 命名（类名/CSS 变量/`data-framer-*` 属性），命名改为语义化 BEM 风格。
+
+### Changes / Files
+- **新增** `src/app/(frontend)/ui-preview.css` — 蒸馏产物：设计 tokens
+  （`--color-ink/paper/accent/line/blush`、`--ease-*`、`--font-display/serif`）、
+  共享排版 preset（`.eyebrow/.display-lg/.display-md/.card-title/.text-body/.overline`）、
+  各区块 BEM 类（`hero__*`、`metrics__*`、`about__*`、`services__*`、`workflow__*`、
+  `testimonials__*`、`invite__*`、`site-footer__*`、`nav-overlay__*`）
+- `globals.css` — 顶部引入 Google Fonts `@import`（CSS @import 必须前置，否则
+  Turbopack 报 "Parsing CSS source code failed"）+ `@import './ui-preview.css'`；
+  body 基础样式改品牌 token（Montserrat + paper 背景 + ink 前景）
+- 删除 `PreviewGlobalStyles.tsx`（内容并入 ui-preview.css）
+- 组件移除所有 `<style>` 块；framer 命名全部重命名：
+  - 类：`framer-nav-link`→`nav-overlay-link`、`framer-hero-*`→`hero__*`、
+    `framer-metric-*`→`metrics__*`、`framer-styles-preset-*`→共享排版类、
+    `framer-1eoihhm`→`metrics`、`framer-i4ynwr`→`metrics__divider`、
+    `svc/rd/tm/iv/ft` 缩写 → `services/workflow/testimonials/invite/site-footer` 语义块
+  - 变量：`--token-<uuid>`/`--framer-ease`/`--framer-font-family` → 语义 tokens
+  - 属性：`data-framer-name`、`data-framer-page-link-current`、`data-highlight`、
+    `data-reset`、`data-border`（无 CSS 引用处）删除；About 按钮 `::after` 边框
+    改用 `.about-cta__pointer::after` 选择器
+- `(preview)/layout.tsx` — metadata description 去掉 "Framer 模板" 字样
+
+### Validation
+- `pnpm exec tsc --noEmit` → 通过
+- `pnpm lint` → 0 errors（warnings 均为存量：lineRefs exhaustive-deps、next/image 等）
+- `node scripts/check-guardrails.mjs` → PASS
+- `pnpm build`（含 postbuild next-sitemap）→ 成功；曾遇 CSS @import 顺序报错，
+  已将字体 @import 移至 globals.css 顶部修复
+- DOM 验证（prod server, port 3100）：新类名存在、旧 framer 类名/变量/data 属性全无
+
+### Deployment Notes
+- 无需 env / migration / restart。
+- 遗留（内容层，未动）：`framerusercontent.com` 图片 URL、`roman24.framer.website`/
+  `framer.com` 外链、footer "Framer" 文案——属素材/内容，不在 CSS 命名范围。
+- `dev-output.log` 未跟踪未提交（本地构建日志）。

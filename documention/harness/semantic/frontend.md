@@ -18,6 +18,18 @@
 - `pnpm build` 后 `postbuild` 会跑 `next-sitemap`（见 `next-sitemap.config.cjs`）；
   新增路由后确认 sitemap 正确收录，别只信 `next build` 的产物。
 
+## 全局 CSS 的 @import 顺序（2026-09-03，Turbopack 报错实锤）
+
+- Tailwind v4 里外部字体 `@import url(...)` 必须放在 `globals.css` **第一行**
+  （所有 `@import` 前、其他规则前）。若放在被引入的子文件（如
+  `./ui-preview.css`）里，Turbopack 内联后会被推到规则后，报
+  `Parsing CSS source code failed` + `@import rules must precede all rules`。
+- 约定：Google Fonts 等外部 `@import` 一律放 `globals.css` 顶部第一条；
+  本地样式蒸馏文件（`ui-preview.css`）只含 tokens + 类规则，不含外部 @import。
+- 关联：`src/app/(frontend)/ui-preview.css` 是全局品牌样式唯一来源
+  （类名 BEM 扁平、tokens 语义化 `--color-*`/`--ease-*`/`--font-*`）；
+  改品牌样式先搜这里，别回填组件内联 `<style>`。
+
 ## `globals.css` 的 `html { opacity: 0 }` 主题门（2026-09-01，实锤踩坑）
 
 - `(frontend)/globals.css` 末尾有 `html { opacity: 0 }`，只有
