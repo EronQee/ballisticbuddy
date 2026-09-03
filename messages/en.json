@@ -1,3 +1,74 @@
 {
-  "Navigation": {}
+  "Navigation": {
+    "search": "Search"
+  },
+  "NotFound": {
+    "title": "This page could not be found.",
+    "goHome": "Go home"
+  },
+  "Search": {
+    "title": "Search",
+    "label": "Search",
+    "placeholder": "Search",
+    "submit": "Submit",
+    "noResults": "No results found."
+  },
+  "Posts": {
+    "title": "Posts"
+  },
+  "Pagination": {
+    "ariaNav": "pagination",
+    "previous": "Previous",
+    "next": "Next",
+    "goToPreviousPage": "Go to previous page",
+    "goToNextPage": "Go to next page",
+    "morePages": "More pages"
+  },
+  "Theme": {
+    "selectAria": "Select a theme",
+    "placeholder": "Theme",
+    "auto": "Auto",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "Common": {
+    "noImage": "No image",
+    "untitledCategory": "Untitled category",
+    "docs": "Docs",
+    "doc": "Doc",
+    "showingRange": "Showing {start} - {end} of {total} {label}",
+    "noResults": "Search produced no results."
+  },
+  "PlaceholderImage": {
+    "title": "Image needed",
+    "description": "Add a real photo or diagram here so this section reads visually complete."
+  },
+  "Blocks": {
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "jsonLdLabel": "Frequently asked questions"
+    },
+    "pricing": {
+      "title": "Pricing",
+      "disclaimerLabel": "Disclaimer"
+    },
+    "specTable": {
+      "title": "Specifications"
+    },
+    "statBand": {
+      "title": "At a glance"
+    },
+    "trustBand": {
+      "title": "Verified by testing"
+    },
+    "vehicleDiagram": {
+      "title": "How a vehicle is protected",
+      "glassLabel": "Ballistic glass",
+      "tireLabel": "Run-flat tires",
+      "frontWindshield": "Front windshield",
+      "sideWindows": "Side windows",
+      "rearWindow": "Rear window",
+      "wheels": "Wheels"
+    }
+  }
 }

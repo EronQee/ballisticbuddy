@@ -2,6 +2,7 @@
 import { cn } from '@/utilities/ui'
 import useClickableCard from '@/utilities/useClickableCard'
 import { Link } from '@/i18n/routing'
+import { useTranslations } from 'next-intl'
 import React, { Fragment } from 'react'
 
 import type { Post } from '@/payload-types'
@@ -20,6 +21,7 @@ export const Card: React.FC<{
 }> = (props) => {
   const { card, link } = useClickableCard({})
   const { className, doc, relationTo, showCategories, title: titleFromProps } = props
+  const t = useTranslations('Common')
 
   const { slug, categories, meta, title } = doc || {}
   const { description, image: metaImage } = meta || {}
@@ -38,7 +40,7 @@ export const Card: React.FC<{
       ref={card}
     >
       <div className="relative w-full ">
-        {!metaImage && <div className="">No image</div>}
+        {!metaImage && <div className="">{t('noImage')}</div>}
         {metaImage && typeof metaImage !== 'string' && <Media resource={metaImage} size="33vw" />}
       </div>
       <div className="p-4">
@@ -48,7 +50,7 @@ export const Card: React.FC<{
               if (typeof category === 'object') {
                 const { title: titleFromCategory } = category
 
-                const categoryTitle = titleFromCategory || 'Untitled category'
+                const categoryTitle = titleFromCategory || t('untitledCategory')
 
                 const isLast = index === categories.length - 1
 

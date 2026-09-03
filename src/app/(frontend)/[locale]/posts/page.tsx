@@ -6,6 +6,7 @@ import { Pagination } from '@/components/Pagination'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { getPayloadLocale } from '@/i18n/getPayloadLocale'
+import { getTranslations } from 'next-intl/server'
 import React from 'react'
 import PageClient from './page.client'
 
@@ -15,6 +16,7 @@ export const revalidate = 600
 export default async function Page() {
   const locale = await getPayloadLocale()
   const payload = await getPayload({ config: configPromise })
+  const t = await getTranslations('Posts')
 
   const posts = await payload.find({
     collection: 'posts',
@@ -35,7 +37,7 @@ export default async function Page() {
       <PageClient />
       <div className="container mb-16">
         <div className="prose dark:prose-invert max-w-none">
-          <h1>Posts</h1>
+          <h1>{t('title')}</h1>
         </div>
       </div>
 

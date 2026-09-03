@@ -21,6 +21,7 @@ const getPagesSitemap = unstable_cache(
         },
       },
       select: {
+        path: true,
         slug: true,
         updatedAt: true,
       },
@@ -45,7 +46,8 @@ const getPagesSitemap = unstable_cache(
       ? results.docs
           .filter((page) => Boolean(page?.slug))
           .flatMap((page) => {
-            const path = page?.slug === 'home' ? '/' : `/${page?.slug}`
+            const slugPath = page?.path || page?.slug
+            const path = slugPath === 'home' ? '/' : `/${slugPath}`
             return localizedSitemapEntries(path).map(({ loc, alternateRefs }) => ({
               loc,
               lastmod: page.updatedAt || dateFallback,

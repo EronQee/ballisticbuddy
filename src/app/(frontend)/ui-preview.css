@@ -14,9 +14,49 @@
   --color-line: #b5b5b5;
   --color-blush: #f9e6e0;
 
+  /* secondary text / raised surfaces — tinted from the world, never grey */
+  --color-ink-soft: #55524e;
+  --color-ink-muted: #726e68;
+  --color-paper-soft: #ece8e2;
+  --color-paper-tint: #fffdf8;
+
+  /* semantic states — deep, muted, in the Roman24 register */
+  --color-success: #456b4e;
+  --color-warning: #94621d;
+  --color-error: #9e3326;
+
   --font-display: 'Montserrat', 'Inter', sans-serif;
   --font-accent: 'Inter', sans-serif;
   --font-serif: 'Kalnia', serif;
+
+  /* type scale — big and calm */
+  --text-display: clamp(52px, 7vw, 96px);
+  --text-h1: clamp(40px, 5vw, 58px);
+  --text-h2: clamp(30px, 4vw, 42px);
+  --text-h3: clamp(22px, 3vw, 30px);
+  --text-lead: 20px;
+  --text-body: 17px;
+  --text-sm: 14px;
+  --text-xs: 12px;
+
+  /* spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+  --space-11: 192px;
+  --space-12: 240px;
+
+  /* radii */
+  --radius-card: 24px;
+  --radius-field: 12px;
+  --radius-pill: 999px;
 
   --ease-smooth: cubic-bezier(0.44, 0, 0.56, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -2546,4 +2586,550 @@ html {
   .newsletter__field {
     min-width: 100%;
   }
+}
+
+/* ==========================================================================
+   Design-system foundation — distilled tokens, typography, forms, controls.
+   Everything below derives from the Roman24 world above; nothing here
+   introduces a material, colour, or easing the homepage never uses.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Article / prose typography (overrides @tailwindcss/typography)
+   Colours ride the --tw-prose-* variables only, so `dark:prose-invert`
+   keeps working; this block lives in @layer components so the utilities
+   layer can still win.
+   -------------------------------------------------------------------------- */
+@layer components {
+  .prose {
+    --tw-prose-body: var(--color-ink);
+    --tw-prose-headings: var(--color-ink);
+    --tw-prose-lead: var(--color-ink-soft);
+    --tw-prose-links: var(--color-accent);
+    --tw-prose-bold: var(--color-ink);
+    --tw-prose-counters: var(--color-accent);
+    --tw-prose-bullets: var(--color-accent);
+    --tw-prose-hr: var(--color-line);
+    --tw-prose-quotes: var(--color-ink);
+    --tw-prose-quote-borders: var(--color-accent);
+    --tw-prose-captions: var(--color-ink-muted);
+    --tw-prose-code: var(--color-accent);
+    --tw-prose-pre-code: var(--color-paper);
+    --tw-prose-pre-bg: var(--color-ink);
+    --tw-prose-th-borders: var(--color-line);
+    --tw-prose-td-borders: var(--color-line);
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: var(--text-body);
+    line-height: 1.85;
+  }
+
+  /* Article headings inherit the display voice, quiet and wide. */
+  .prose :where(h1, h2, h3, h4) {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 0.55em;
+    margin-top: 0;
+  }
+
+  .prose :where(h1) {
+    font-size: var(--text-h1);
+  }
+  .prose :where(h2) {
+    font-size: var(--text-h2);
+  }
+  .prose :where(h3) {
+    font-size: var(--text-h3);
+  }
+  .prose :where(h4) {
+    font-size: var(--text-h3);
+    font-weight: 700;
+  }
+
+  .prose :where(p) {
+    margin-top: 0;
+    margin-bottom: 1.4em;
+  }
+
+  .prose :where(a) {
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.25s var(--ease-smooth);
+  }
+
+  .prose :where(a:hover) {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .prose :where(blockquote) {
+    border-left: 1px solid var(--color-line);
+    font-family: var(--font-display);
+    font-size: 1.35em;
+    font-weight: 500;
+    font-style: normal;
+    line-height: 1.5;
+    margin: 1.6em 0;
+    padding: 0.1em 0 0.1em 1.4em;
+  }
+
+  .prose :where(ul, ol) {
+    margin: 0 0 1.4em;
+    padding-left: 1.4em;
+  }
+
+  .prose :where(li) {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+
+  .prose :where(code) {
+    background: color-mix(in srgb, var(--color-ink) 6%, transparent);
+    border-radius: 4px;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.85em;
+    padding: 0.15em 0.4em;
+  }
+
+  .prose :where(pre) {
+    border-radius: var(--radius-card);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.85em;
+    line-height: 1.7;
+    overflow-x: auto;
+    padding: 1.4em 1.6em;
+  }
+
+  .prose :where(pre code) {
+    background: none;
+    padding: 0;
+  }
+
+  .prose :where(img) {
+    border-radius: var(--radius-card);
+    margin: 1.6em auto;
+  }
+
+  .prose :where(hr) {
+    border: 0;
+    border-top: 1px solid var(--color-line);
+    margin: 2.4em 0;
+  }
+
+  .prose :where(table) {
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+    margin: 1.6em 0;
+    width: 100%;
+  }
+
+  .prose :where(th) {
+    border-bottom: 1px solid var(--color-line);
+    font-weight: 600;
+    padding: 0.6em 1em 0.6em 0;
+    text-align: left;
+  }
+
+  .prose :where(td) {
+    border-bottom: 1px solid var(--color-line);
+    padding: 0.6em 1em 0.6em 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Lead / caption / muted helpers
+   -------------------------------------------------------------------------- */
+.lead {
+  color: var(--color-ink-soft);
+  font-family: var(--font-display);
+  font-size: var(--text-lead);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.caption {
+  color: var(--color-ink-muted);
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.muted {
+  color: var(--color-ink-soft);
+}
+
+/* --------------------------------------------------------------------------
+   Forms
+   -------------------------------------------------------------------------- */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.field__label {
+  color: var(--color-ink-soft);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.field__hint {
+  color: var(--color-ink-muted);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.field__error {
+  color: var(--color-error);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.input,
+.select,
+.textarea {
+  appearance: none;
+  background: var(--color-paper);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-field);
+  box-shadow: none;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: var(--text-body);
+  line-height: 1.5;
+  outline: none;
+  padding: 0.85em 1em;
+  transition: border-color 0.25s var(--ease-smooth), box-shadow 0.25s var(--ease-smooth);
+  width: 100%;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--color-ink-muted);
+}
+
+.input:hover,
+.select:hover,
+.textarea:hover {
+  border-color: var(--color-ink-muted);
+}
+
+.input:focus-visible,
+.select:focus-visible,
+.textarea:focus-visible {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 18%, transparent);
+}
+
+.input:disabled,
+.select:disabled,
+.textarea:disabled {
+  background: var(--color-paper-soft);
+  border-color: var(--color-line);
+  color: var(--color-ink-muted);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Error state */
+.field--error .input,
+.field--error .select,
+.field--error .textarea,
+.input--error,
+.select--error,
+.textarea--error {
+  border-color: var(--color-error);
+}
+
+.field--error .input:focus-visible,
+.field--error .select:focus-visible,
+.field--error .textarea:focus-visible,
+.input--error:focus-visible,
+.select--error:focus-visible,
+.textarea--error:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-error) 18%, transparent);
+}
+
+/* Select with a drawn chevron — no stock arrow, consistent stroke */
+.select {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23b5b5b5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-position: right 1em center;
+  background-repeat: no-repeat;
+  background-size: 12px 8px;
+  padding-right: 2.6em;
+}
+
+/* Checkbox / radio — drawn marks in the accent, never a stock glyph */
+.check {
+  appearance: none;
+  border: 1.5px solid var(--color-line);
+  border-radius: 6px;
+  cursor: pointer;
+  height: 20px;
+  position: relative;
+  transition: background-color 0.2s var(--ease-smooth), border-color 0.2s var(--ease-smooth);
+  width: 20px;
+}
+
+.check:hover {
+  border-color: var(--color-accent);
+}
+
+.check:checked {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.check:checked::after {
+  border: solid var(--color-paper);
+  border-width: 0 2px 2px 0;
+  content: '';
+  height: 9px;
+  left: 6px;
+  position: absolute;
+  top: 2px;
+  transform: rotate(45deg);
+  width: 5px;
+}
+
+.check--radio {
+  border-radius: 50%;
+}
+
+.check--radio:checked::after {
+  background: var(--color-paper);
+  border: 0;
+  border-radius: 50%;
+  height: 8px;
+  left: 5px;
+  top: 5px;
+  width: 8px;
+}
+
+.check:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 18%, transparent);
+  outline: none;
+}
+
+.check:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* --------------------------------------------------------------------------
+   Buttons
+   -------------------------------------------------------------------------- */
+.btn {
+  align-items: center;
+  background: var(--color-accent);
+  border: 1px solid transparent;
+  border-radius: var(--radius-field);
+  color: var(--color-paper);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--font-display);
+  font-size: var(--text-body);
+  font-weight: 600;
+  gap: var(--space-3);
+  justify-content: center;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  min-height: 52px;
+  padding: 0 1.7em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background-color 0.25s var(--ease-smooth), border-color 0.25s var(--ease-smooth),
+    color 0.25s var(--ease-smooth), transform 0.25s var(--ease-smooth);
+}
+
+.btn:hover {
+  background: color-mix(in srgb, var(--color-accent) 88%, var(--color-ink));
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 25%, transparent);
+  outline: none;
+}
+
+.btn--dark {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.btn--dark:hover {
+  background: color-mix(in srgb, var(--color-ink) 80%, var(--color-accent));
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: var(--color-line);
+  color: var(--color-ink);
+}
+
+.btn--ghost:hover {
+  background: var(--color-paper-soft);
+  border-color: var(--color-ink-muted);
+  color: var(--color-ink);
+}
+
+.btn--sm {
+  font-size: var(--text-sm);
+  min-height: 40px;
+  padding: 0 1.2em;
+}
+
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Listing components — pagination, post cards, empty state
+   -------------------------------------------------------------------------- */
+.pagination {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
+  padding: var(--space-8) 0;
+}
+
+.pagination__link {
+  align-items: center;
+  background: var(--color-paper);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-field);
+  color: var(--color-ink);
+  display: inline-flex;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  height: 40px;
+  justify-content: center;
+  min-width: 40px;
+  padding: 0 0.9em;
+  text-decoration: none;
+  transition: background-color 0.2s var(--ease-smooth), border-color 0.2s var(--ease-smooth),
+    color 0.2s var(--ease-smooth);
+}
+
+.pagination__link:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.pagination__link--current,
+.pagination__link[aria-current='page'] {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-paper);
+}
+
+.pagination__link:disabled,
+.pagination__link[aria-disabled='true'] {
+  color: var(--color-ink-muted);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.post-card {
+  background: var(--color-paper);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  overflow: hidden;
+  padding: var(--space-6);
+  transition: border-color 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth),
+    transform 0.3s var(--ease-smooth);
+}
+
+.post-card:hover {
+  border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-line));
+  box-shadow: 0 18px 40px -24px color-mix(in srgb, var(--color-ink) 35%, transparent);
+  transform: translateY(-3px);
+}
+
+.post-card__title {
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: var(--text-h3);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.post-card__title a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s var(--ease-smooth);
+}
+
+.post-card__title a:hover {
+  color: var(--color-accent);
+}
+
+.post-card__excerpt {
+  color: var(--color-ink-soft);
+  font-family: var(--font-display);
+  font-size: var(--text-body);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.post-card__meta {
+  align-items: center;
+  color: var(--color-ink-muted);
+  display: flex;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  gap: var(--space-3);
+}
+
+.empty {
+  align-items: center;
+  border: 1px dashed var(--color-line);
+  border-radius: var(--radius-card);
+  color: var(--color-ink-soft);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-display);
+  gap: var(--space-3);
+  padding: var(--space-9) var(--space-6);
+  text-align: center;
+}
+
+.empty__title {
+  color: var(--color-ink);
+  font-size: var(--text-h3);
+  font-weight: 600;
+  margin: 0;
+}
+
+.empty__text {
+  font-size: var(--text-body);
+  line-height: 1.6;
+  margin: 0;
+  max-width: 42ch;
 }

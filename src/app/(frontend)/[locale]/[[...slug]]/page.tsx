@@ -23,37 +23,37 @@ export async function generateStaticParams() {
     overrideAccess: false,
     pagination: false,
     select: {
+      path: true,
       slug: true,
     },
   })
 
   const params = pages.docs
-    ?.filter((doc) => {
-      return doc.slug !== 'home'
-    })
-    .map(({ slug }) => {
-      return { slug }
-    })
+    ? pages.docs.map(({ path, slug }) => {
+        const slugPath = path || slug
+        // The home page lives at the root: an empty catch-all segment array.
+        return { slug: slugPath === 'home' ? [] : slugPath.split('/') }
+      })
+    : []
 
   return params
 }
 
 type Args = {
   params: Promise<{
-    slug?: string
+    slug?: string[]
   }>
 }
 
 export default async function Page({ params: paramsPromise }: Args) {
   const { isEnabled: draft } = await draftMode()
-  const { slug = 'home' } = await paramsPromise
-  // Decode to support slugs with special characters
-  const decodedSlug = decodeURIComponent(slug)
-  const url = '/' + decodedSlug
+  const segments = (await paramsPromise).slug
+  const slug = segments?.length ? segments.join('/') : 'home'
+  const url = '/' + slug
   let page: RequiredDataFromCollectionSlug<'pages'> | null
 
   page = await queryPageBySlug({
-    slug: decodedSlug,
+    slug,
   })
 
   // Remove this code once your website is seeded
@@ -82,11 +82,10 @@ export default async function Page({ params: paramsPromise }: Args) {
 }
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
-  const { slug = 'home' } = await paramsPromise
-  // Decode to support slugs with special characters
-  const decodedSlug = decodeURIComponent(slug)
+  const segments = (await paramsPromise).slug
+  const slug = segments?.length ? segments.join('/') : 'home'
   const page = await queryPageBySlug({
-    slug: decodedSlug,
+    slug,
   })
 
   return generateMeta({ doc: page })
@@ -106,9 +105,18 @@ const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
     pagination: false,
     overrideAccess: draft,
     where: {
-      slug: {
-        equals: slug,
-      },
+      or: [
+        {
+          path: {
+            equals: slug,
+          },
+        },
+        {
+          slug: {
+            equals: slug,
+          },
+        },
+      ],
     },
   })
 

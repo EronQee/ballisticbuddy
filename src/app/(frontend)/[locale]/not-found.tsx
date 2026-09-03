@@ -1,17 +1,20 @@
 import { Link } from '@/i18n/routing'
+import { getTranslations } from 'next-intl/server'
 import React from 'react'
 
 import { Button } from '@/components/ui/button'
 
-export default function NotFound() {
+export default async function NotFound() {
+  const t = await getTranslations('NotFound')
+
   return (
     <div className="container py-28">
       <div className="prose max-w-none">
         <h1 style={{ marginBottom: 0 }}>404</h1>
-        <p className="mb-4">This page could not be found.</p>
+        <p className="mb-4">{t('title')}</p>
       </div>
       <Button asChild variant="default">
-        <Link href="/">Go home</Link>
+        <Link href="/">{t('goHome')}</Link>
       </Button>
     </div>
   )

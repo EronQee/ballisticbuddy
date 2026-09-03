@@ -8,17 +8,26 @@ const collectionPrefixMap: Partial<Record<CollectionSlug, string>> = {
 
 type Props = {
   collection: keyof typeof collectionPrefixMap
-  slug: string
+  path?: string | null
   req: PayloadRequest
+  slug: string
 }
 
-export const generatePreviewPath = ({ collection, slug }: Props) => {
+export const generatePreviewPath = ({ collection, path, slug }: Props) => {
   if (slug === undefined || slug === null) {
     return null
   }
 
-  // Encode to support slugs with special characters
-  const encodedSlug = encodeURIComponent(slug)
+  // Multi-segment pages store a full path (e.g. products/bulletproof-vehicle-glass).
+  // When present, use it directly; otherwise fall back to the slug.
+  const urlPath = path || slug
+
+  // Encode each segment to support slugs with special characters
+  // while keeping forward slashes intact.
+  const encodedSlug = urlPath
+    .split('/')
+    .map((segment) => encodeURIComponent(segment))
+    .join('/')
 
   const encodedParams = new URLSearchParams({
     path: `${collectionPrefixMap[collection]}/${encodedSlug}`,

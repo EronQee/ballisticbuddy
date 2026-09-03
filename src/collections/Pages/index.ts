@@ -5,8 +5,14 @@ import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { Archive } from '../../blocks/ArchiveBlock/config'
 import { CallToAction } from '../../blocks/CallToAction/config'
 import { Content } from '../../blocks/Content/config'
+import { FAQ } from '../../blocks/FAQ/config'
 import { FormBlock } from '../../blocks/Form/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { Pricing } from '../../blocks/Pricing/config'
+import { SpecTable } from '../../blocks/SpecTable/config'
+import { StatBand } from '../../blocks/StatBand/config'
+import { TrustBand } from '../../blocks/TrustBand/config'
+import { VehicleDiagram } from '../../blocks/VehicleDiagram/config'
 import { hero } from '@/heros/config'
 import { slugField } from 'payload'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
@@ -35,12 +41,14 @@ export const Pages: CollectionConfig<'pages'> = {
   defaultPopulate: {
     title: true,
     slug: true,
+    path: true,
   },
   admin: {
     defaultColumns: ['title', 'slug', 'updatedAt'],
     livePreview: {
       url: ({ data, req }) =>
         generatePreviewPath({
+          path: data?.path as string | null | undefined,
           slug: data?.slug,
           collection: 'pages',
           req,
@@ -48,6 +56,7 @@ export const Pages: CollectionConfig<'pages'> = {
     },
     preview: (data, { req }) =>
       generatePreviewPath({
+        path: data?.path as string | null | undefined,
         slug: data?.slug as string,
         collection: 'pages',
         req,
@@ -73,7 +82,19 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock],
+              blocks: [
+                CallToAction,
+                Content,
+                FAQ,
+                MediaBlock,
+                Pricing,
+                SpecTable,
+                StatBand,
+                TrustBand,
+                VehicleDiagram,
+                Archive,
+                FormBlock,
+              ],
               required: true,
               admin: {
                 initCollapsed: true,
@@ -116,6 +137,24 @@ export const Pages: CollectionConfig<'pages'> = {
       type: 'date',
       admin: {
         position: 'sidebar',
+      },
+    },
+    {
+      name: 'path',
+      type: 'text',
+      admin: {
+        description:
+          'Full path for multi-segment URLs (e.g. products/bulletproof-vehicle-glass). Leave empty to use the slug.',
+        position: 'sidebar',
+      },
+      index: true,
+      validate: (value?: string | null) => {
+        if (!value) return true
+        const valid = /^[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)*$/.test(value)
+        if (!valid) {
+          return 'Path must be lowercase segments separated by forward slashes (e.g. products/bulletproof-vehicle-glass).'
+        }
+        return true
       },
     },
     slugField(),
