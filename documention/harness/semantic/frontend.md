@@ -13,6 +13,21 @@
 
 - Next.js 缓存：改了内容本地看不到效果先怀疑缓存（`next start` 场景），别急着改代码。
 
+## 路由：`page.tsx` 与可选 catch-all 同特异性冲突（2026-09-03 实锤）
+
+- Next.js 16 **禁止**静态 `page.tsx`（index 路由）与同目录可选 catch-all
+  `[[...slug]]` 并存：`Error: You cannot define a route with the same specificity
+  as an optional catch-all route`。`[locale]/page.tsx`（re-export home）碰到
+  `[locale]/[[...slug]]/page.tsx` 直接 build 失败。
+- 修法：删掉 index `page.tsx`，让 `[[...slug]]` 空 slug 承接 home
+  （`generateStaticParams` 对 home 返回 `{ slug: [] }`，页面内 `slug?.length ?
+  segments.join('/') : 'home'`）。布局 locale 用 `[locale]/layout.tsx` 的
+  `generateStaticParams`，页面级参数与布局级参数各自生成、互不冲突。
+- 多段 URL 数据模型：Pages 新增 `path` 字段存完整路径（如
+  `products/bulletproof-vehicle-glass`），`slug` 保持自动生成短标识；
+  `queryPageBySlug` 用 `or: [{path equals},{slug equals}]`；`generatePreviewPath`/
+  `PayloadRedirects`/`CMSLink`/`generateMeta`/pages-sitemap 一律 `path || slug`。
+
 ## 构建产物与 sitemap
 
 - `pnpm build` 后 `postbuild` 会跑 `next-sitemap`（见 `next-sitemap.config.cjs`）；

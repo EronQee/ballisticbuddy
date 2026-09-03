@@ -33,3 +33,14 @@
 - 本地一次性 workaround：备份 → 断硬链接 → 在 Terminal 构造器加
   `if(!this.stdin.isTTY){setImmediate(()=>keypress("",{name:"return"}))}` →
   跑生成 → 还原原文件。新站空库可放心接受默认「create column」。
+
+## migrate 执行的交互确认（2026-09-03 实测）
+
+- `payload migrate:create` 对纯新增列/新表（非 rename）场景**可以无交互直接生成**
+  迁移文件（TS + JSON 成对），且自动注册进 `src/migrations/index.ts`——本会话
+  加了 `pages.path` 列 + 6 个新 block 表，`pnpm payload migrate:create` 一条命令
+  完成，无 create-vs-rename 提示。
+- 真正卡住的是 `payload migrate` **执行**阶段：若库曾经用 dev 模式 push 过，会
+  弹 `It looks like you've run Payload in dev mode ... data loss will occur.
+  Proceed? (y/N)`。幂等构建/脚本里用管道喂 `"y" | pnpm payload migrate` 即可
+  （仅 ADD COLUMN/CREATE TABLE 的迁移无删表风险，可放心确认）。
