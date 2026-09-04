@@ -213,3 +213,30 @@ props 照常注册。典型例：ParallaxWrapper（`speed: 'number'` + `children
 6. [ ] barrel 导出 → `src/components/plasmic/index.ts`
 7. [ ] dev server 热更后，Studio 刷新项目验证出现 + 属性面板正确
 8. [ ] 打磨满意 → 固化回组件代码（见 workflow 文档流程 B）→ commit
+
+---
+
+## 10. AI 转换提示词模板
+
+把任意 React 组件代码转成 Plasmic code component 时，
+**attach 本文档 + 组件代码文件**，配下面的提示词：
+
+```
+这是 Plasmic code component 的注册规范（附件文档）。
+这是我的组件代码（附件文件）。
+请把它转换为一个 Plasmic code component：
+1. 按文档 §1-§2 把所有硬编码的视觉值提取成 props，全部带 defaultValue
+2. 根元素挂 className 并支持外部覆盖（文档 §7）
+3. slot 一律给 defaultValue 元素树（文档 §4）；没有 slot 就不需要
+4. 若有 next/image、next/link，替换为 <img>/<a>（视觉等价）
+5. React hooks/事件逻辑可保留，但数据请求、浏览器 API 移出组件改为 props 传入
+6. 输出：① 完整组件 TSX（含 props 接口定义）② registerComponent 调用代码
+7. 最后按文档 §9 检查单逐项自检并标注结果
+```
+
+**约束说明（给 AI 的补充，可选）**：
+
+- name 命名：camelCase 且首字母大写（如 `PricingCard`）
+- choice 的 options 用 `{value, label}[]` 形式以便显示友好名
+- 数字/字符串默认值必须与原代码的视觉表现一致（转换不改变外观）
+- 如组件含动画（CSS transition/keyframes），保留并说明哪个 prop 控制开关
