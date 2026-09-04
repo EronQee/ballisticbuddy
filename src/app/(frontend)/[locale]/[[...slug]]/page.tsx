@@ -1,12 +1,12 @@
 import type { Metadata } from 'next'
 
 import { PayloadRedirects } from '@/components/PayloadRedirects'
+import HomeLanding from '@/components/home/HomeLanding'
 import configPromise from '@payload-config'
-import { getPayload, type RequiredDataFromCollectionSlug } from 'payload'
+import { getPayload } from 'payload'
 import { getPayloadLocale } from '@/i18n/getPayloadLocale'
 import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
-import { homeStatic } from '@/endpoints/seed/home-static'
 
 import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { RenderHero } from '@/heros/RenderHero'
@@ -50,15 +50,14 @@ export default async function Page({ params: paramsPromise }: Args) {
   const segments = (await paramsPromise).slug
   const slug = segments?.length ? segments.join('/') : 'home'
   const url = '/' + slug
-  let page: RequiredDataFromCollectionSlug<'pages'> | null
 
-  page = await queryPageBySlug({
+  const page = await queryPageBySlug({
     slug,
   })
 
   // Remove this code once your website is seeded
   if (!page && slug === 'home') {
-    page = homeStatic
+    return <HomeLanding />
   }
 
   if (!page) {
@@ -88,7 +87,19 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
     slug,
   })
 
-  return generateMeta({ doc: page })
+  if (page) {
+    return generateMeta({ doc: page })
+  }
+
+  if (slug === 'home') {
+    return {
+      title: 'BallisticBuddy — Tested Ballistic Glass & Run-Flat Tires',
+      description:
+        'Bulletproof vehicle glass and run-flat tire inserts. Ballistic protection tested to Chinese national standards — every claim ships with a test protocol you can reproduce.',
+    }
+  }
+
+  return generateMeta({ doc: null })
 }
 
 const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {

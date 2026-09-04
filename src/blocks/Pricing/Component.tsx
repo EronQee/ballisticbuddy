@@ -12,7 +12,8 @@ export const PricingBlock: React.FC<PricingBlockProps> = async ({ disclaimer, in
   return (
     <div className="container my-16">
       <div className="max-w-[48rem]">
-        <h2 className="display-md">{heading}</h2>
+        <h2 className="eyebrow">{t('eyebrow')}</h2>
+        <h3 className="display-md mt-2">{heading}</h3>
         {intro && (
           <div className="mt-4">
             <RichText className="mb-0" data={intro} enableGutter={false} />
@@ -24,14 +25,16 @@ export const PricingBlock: React.FC<PricingBlockProps> = async ({ disclaimer, in
         {(tiers || []).map(({ description, details, name, priceRange }, index) => {
           return (
             <div
-              className="rounded-[var(--radius-card)] border border-[var(--color-line)] bg-[var(--color-paper-tint)] p-6"
+              className="flex flex-col rounded-[var(--radius-card)] border border-[var(--color-line)] bg-[var(--color-paper-tint)] p-6"
               key={index}
             >
-              <h3 className="card-title">{name}</h3>
-              {description && <p className="text-body mt-2">{description}</p>}
-              <p className="mt-4 text-xl font-semibold text-[var(--color-ink)]">{priceRange}</p>
+              <p className="text-sm font-bold uppercase tracking-[0.08em] text-[var(--color-accent)]">
+                {name}
+              </p>
+              <p className="mt-3 text-2xl font-bold text-[var(--color-ink)]">{priceRange}</p>
+              {description && <p className="text-body mt-2 text-sm">{description}</p>}
               {details && details.length > 0 && (
-                <ul className="mt-4 list-disc space-y-1 pl-5 text-[var(--color-ink-soft)]">
+                <ul className="mt-4 list-disc space-y-1 pl-5 text-sm text-[var(--color-ink-soft)]">
                   {details.map(({ detail }, detailIndex) => (
                     <li key={detailIndex}>{detail}</li>
                   ))}

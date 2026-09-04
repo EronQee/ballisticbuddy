@@ -49,19 +49,24 @@
       "jsonLdLabel": "Frequently asked questions"
     },
     "pricing": {
+      "eyebrow": "Transparent pricing",
       "title": "Pricing",
       "disclaimerLabel": "Disclaimer"
     },
     "specTable": {
+      "eyebrow": "Specifications",
       "title": "Specifications"
     },
     "statBand": {
+      "eyebrow": "Measured, not claimed",
       "title": "At a glance"
     },
     "trustBand": {
+      "eyebrow": "Verified by testing",
       "title": "Verified by testing"
     },
     "vehicleDiagram": {
+      "eyebrow": "Where the protection lives",
       "title": "How a vehicle is protected",
       "glassLabel": "Ballistic glass",
       "tireLabel": "Run-flat tires",

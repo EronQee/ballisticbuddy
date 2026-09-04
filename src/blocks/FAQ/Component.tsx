@@ -41,7 +41,8 @@ export const FAQBlock: React.FC<FAQBlockProps> = async ({ intro, items, title })
         type="application/ld+json"
       />
       <div className="max-w-[48rem]">
-        <h2 className="display-md">{heading}</h2>
+        <h2 className="eyebrow">{t('jsonLdLabel')}</h2>
+        <h3 className="display-md mt-2">{heading}</h3>
         {intro && (
           <div className="mt-4">
             <RichText className="mb-0" data={intro} enableGutter={false} />
@@ -52,12 +53,18 @@ export const FAQBlock: React.FC<FAQBlockProps> = async ({ intro, items, title })
         {(items || []).map(({ answer, question }, index) => {
           return (
             <details
-              className="border-b border-[var(--color-line)] py-4 first:border-t"
+              className="group border-b border-[var(--color-line)] py-4 first:border-t"
               key={index}
               open={index === 0}
             >
-              <summary className="cursor-pointer list-none text-lg font-semibold text-[var(--color-ink)] [&::-webkit-details-marker]:hidden">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-semibold text-[var(--color-ink)] [&::-webkit-details-marker]:hidden">
                 {question}
+                <span
+                  aria-hidden="true"
+                  className="flex h-8 w-8 flex-none items-center justify-center rounded-full border border-[var(--color-line)] text-[var(--color-accent)] transition-transform duration-300 group-open:rotate-45"
+                >
+                  +
+                </span>
               </summary>
               <div className="mt-3">
                 <RichText data={answer} enableGutter={false} />

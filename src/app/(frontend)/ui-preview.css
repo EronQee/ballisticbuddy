@@ -128,19 +128,6 @@ html {
   color: var(--color-ink);
 }
 
-.overline {
-  margin: 0;
-  padding: 0;
-  font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 500;
-  letter-spacing: 0;
-  line-height: 1.5em;
-  text-transform: uppercase;
-  color: var(--color-ink);
-  transition: color 0.35s var(--ease-spring);
-}
-
 /* --------------------------------------------------------------------------
    Site header + menu overlay
    -------------------------------------------------------------------------- */
@@ -1965,7 +1952,7 @@ html {
   flex-flow: column;
   gap: 72px;
   overflow: hidden;
-  padding: 48px 0;
+  padding: 48px;
   align-items: flex-end;
   display: flex;
   height: 800px;
@@ -1985,6 +1972,15 @@ html {
 .invite__noise {
   flex: 0 0 auto;
   overflow: hidden;
+}
+
+.invite__wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 72px;
+  align-items: flex-end;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .invite__content {
@@ -2174,9 +2170,6 @@ html {
   .invite__cta {
     width: 100%;
   }
-  .invite__headline {
-    font-size: 32px;
-  }
 }
 
 /* --------------------------------------------------------------------------
@@ -2208,8 +2201,8 @@ html {
 }
 
 .site-footer__top {
-  align-content: flex-end;
-  align-items: flex-end;
+  align-content: center;
+  align-items: center;
   display: flex;
   flex: 0 0 auto;
   flex-direction: row;
@@ -2227,13 +2220,13 @@ html {
 }
 
 .site-footer__brand {
-  flex: 1 0 0px;
-  white-space: pre-wrap;
+  flex: 2 1 0px;
+  white-space: nowrap;
   height: auto;
   position: relative;
-  width: 1px;
-  word-break: break-word;
-  overflow-wrap: break-word;
+  width: auto;
+  word-break: normal;
+  overflow-wrap: normal;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -2249,6 +2242,7 @@ html {
   letter-spacing: 0;
   text-transform: uppercase;
   text-align: start;
+  white-space: nowrap;
   color: var(--color-ink);
   margin: 0;
   padding: 0;
@@ -2258,7 +2252,7 @@ html {
   align-content: center;
   align-items: center;
   display: flex;
-  flex: 1 0 0px;
+  flex: 1 1 0px;
   flex-direction: row;
   flex-wrap: nowrap;
   gap: 48px;
@@ -2267,7 +2261,7 @@ html {
   overflow: visible;
   padding: 0;
   position: relative;
-  width: 1px;
+  width: auto;
   opacity: 1;
 }
 
@@ -2384,6 +2378,82 @@ html {
 
 .site-footer__col--other {
   align-items: center;
+}
+
+/* Three-column footer layout for link groups. Overrides the original spans
+   so every column is equal width and top-aligned. */
+.site-footer__grid--3col {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: auto;
+  height: auto;
+  align-items: start;
+}
+
+.site-footer__grid--3col .site-footer__col,
+.site-footer__grid--3col .site-footer__col--pages,
+.site-footer__grid--3col .site-footer__col--utility,
+.site-footer__grid--3col .site-footer__col--newsletter,
+.site-footer__grid--3col .site-footer__col--other {
+  grid-row: auto;
+  grid-column: auto;
+  align-items: flex-start;
+  height: auto;
+}
+
+/* Get a Quote — standalone block, sibling of the link grid */
+.site-footer__quote {
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: 0 120px;
+}
+
+.site-footer__quote-inner {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 40px 0 56px;
+}
+
+.site-footer__quote-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 480px;
+}
+
+.site-footer__text--quote-heading {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+}
+
+.site-footer__quote-theme {
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 1024px) {
+  .site-footer__quote {
+    padding: 0 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .site-footer__quote {
+    padding: 0 16px;
+  }
+  .site-footer__quote-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
 }
 
 .site-footer__text {
@@ -2562,6 +2632,9 @@ html {
     grid-column: span 1;
     grid-row: auto;
   }
+  .site-footer__grid--3col {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 768px) {
@@ -2578,6 +2651,9 @@ html {
     grid-template-columns: 1fr;
     padding: 0 16px;
     gap: 36px;
+  }
+  .site-footer__grid--3col {
+    grid-template-columns: 1fr;
   }
   .site-footer__col--utility,
   .site-footer__col--other {

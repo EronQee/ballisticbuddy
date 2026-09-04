@@ -56,3 +56,27 @@
   动态路由用 `<InitTheme />`）。
 - 已有 CI 断言：`scripts/check-guardrails.mjs` check 2（html-theme-gate）。
 - 事件复盘见 `../episodic/ui-preview-whiteout-20260901.md`。
+
+## Plasmic 集成与 Turbopack 副作用导入陷阱（2026-09-04）
+
+- 项目已集成 @plasmicapp/loader-nextjs@2.0.27（v2，官方支持 React 19 + App Router）。
+  关键文件：src/plasmic/plasmic-init.ts（loader，读 NEXT_PUBLIC_PLASMIC_PROJECT_ID/
+  NEXT_PUBLIC_PLASMIC_PROJECT_API_TOKEN）、src/plasmic/plasmic-init-client.tsx
+  （'use client'，所有 PLASMIC.registerComponent 都在这里）、host 页面
+  src/app/(frontend)/plasmic-host/。
+- **硬规则：(frontend)/plasmic-host/page.tsx 必须是 'use client' 组件。**
+  官方文档示例是 Server Component + 副作用导入 client 模块，webpack 下可行，
+  但 **Next 16 Turbopack 会把 Server Component 中无显式使用的 client 模块
+  副作用导入优化掉**——注册代码在浏览器中根本不执行，且无任何报错
+  （Studio 里组件不出现、注册表为空，页面本身 200 正常）。
+- 诊断探针：host 页面浏览器 console 执行
+  globalThis.__PlasmicComponentRegistry?.map(r => r.meta.name)——空数组 =
+  注册未执行；有名字 = Studio 侧问题。这是 Plasmic 官方排障法（论坛 6154）。
+- Studio 读取注册表的通道：window.parent.__PlasmicComponentRegistry
+  （StudioCtx._ccRegistry），读取函数是 memoizeOne——空结果会被永久缓存。
+- /plasmic-host 必须加入 src/proxy.ts matcher 排除列表，否则被 next-intl
+  重写成 /en/plasmic-host 落入 [locale] catch-all → 404。
+- 机器环境注意：本机有 TUN 模式代理（fake-ip 网段 198.18.0.1），
+  对 plasmic 域名的异常 4xx/TLS 重置先怀疑代理，不要误判为凭据/代码问题
+  （区分法：假 token → 403；真 token → 4xx 则查网络）。
+- 事件复盘见 ../episodic/plasmic-apphost-turbopack-side-effect-import-20260904.md。

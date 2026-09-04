@@ -56,9 +56,11 @@ export default async function LocaleLayout({ children, params }: Props) {
             }}
           />
           <NextIntlClientProvider>
-            <Header />
-            {children}
-            <Footer />
+            <div style={{ padding: '0 12px' }}>
+              <Header />
+              {children}
+              <Footer />
+            </div>
           </NextIntlClientProvider>
         </Providers>
       </body>

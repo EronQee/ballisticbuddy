@@ -96,7 +96,19 @@ function AnimatedMetricItem({
         </p>
       </div>
       <div className="metrics__stat">
-        <p className="overline">{label}</p>
+        <p
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: '16px',
+            fontWeight: 500,
+            letterSpacing: 0,
+            lineHeight: '1.5em',
+            textTransform: 'uppercase',
+            color: 'var(--color-ink)',
+          }}
+        >
+          {label}
+        </p>
       </div>
     </div>
   )

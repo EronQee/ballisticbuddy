@@ -31,9 +31,19 @@ export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
                 })}
                 key={index}
               >
-                {richText && <RichText data={richText} enableGutter={false} />}
+                <div className="rounded-[var(--radius-card)] border border-[var(--color-line)] bg-[var(--color-paper-tint)] p-6 md:p-8">
+                  {richText && (
+                    <div className="[&_h2]:font-[var(--font-display)] [&_h2]:text-[var(--text-h2)] [&_h2]:font-semibold [&_h3]:font-[var(--font-display)] [&_h3]:text-[var(--text-h3)] [&_h3]:font-semibold [&_h4]:font-[var(--font-display)] [&_h4]:text-[var(--text-h3)] [&_h4]:font-semibold [&_p]:text-[var(--color-ink-soft)] [&_a]:text-[var(--color-accent)] [&_a]:underline">
+                      <RichText data={richText} enableGutter={false} />
+                    </div>
+                  )}
 
-                {enableLink && <CMSLink {...link} />}
+                  {enableLink && (
+                    <div className="mt-4">
+                      <CMSLink {...link} />
+                    </div>
+                  )}
+                </div>
               </div>
             )
           })}

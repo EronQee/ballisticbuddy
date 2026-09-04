@@ -17,7 +17,8 @@ documention/harness/
 │   └── tooling.md          guardrail 脚本/正则/PowerShell
 ├── episodic/               事件复盘："发生了什么"
 │   ├── ui-preview-whiteout-20260901.md
-│   └── proxy-matcher-hijack-20260903.md
+│   ├── proxy-matcher-hijack-20260903.md
+│   └── plasmic-apphost-turbopack-side-effect-import-20260904.md
 └── procedural/             行为规则："该怎么做"
     ├── agent-behavior.md   惯例≠默认/复盘信号/知识固化
     ├── troubleshooting.md  先搜索后苦干/DOM≠视觉/截图契约

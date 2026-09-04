@@ -15,7 +15,8 @@ export const TrustBandBlock: React.FC<TrustBandBlockProps> = async ({ intro, ite
   return (
     <div className="container my-16">
       <div className="max-w-[48rem]">
-        <h2 className="display-md">{heading}</h2>
+        <h2 className="eyebrow">{t('eyebrow')}</h2>
+        <h3 className="display-md mt-2">{heading}</h3>
         {intro && (
           <div className="mt-4">
             <RichText className="mb-0" data={intro} enableGutter={false} />

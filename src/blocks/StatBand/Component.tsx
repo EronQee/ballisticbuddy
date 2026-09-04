@@ -10,7 +10,10 @@ export const StatBandBlock: React.FC<StatBandBlockProps> = async ({ intro, stats
   return (
     <div className="container my-16">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <h2 className="display-md">{heading}</h2>
+        <div>
+          <h2 className="eyebrow">{t('eyebrow')}</h2>
+          <h3 className="display-md mt-2">{heading}</h3>
+        </div>
         {intro && <p className="text-body max-w-md md:text-right">{intro}</p>}
       </div>
 

@@ -130,8 +130,13 @@ export default function PreviewAbout() {
             {/* Text Label */}
             <div className="about-cta__label">
               <p
-                className="overline"
                 style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '16px',
+                  fontWeight: 500,
+                  letterSpacing: 0,
+                  lineHeight: '1.5em',
+                  textTransform: 'uppercase',
                   color: isButtonHovered
                     ? 'var(--color-paper)'
                     : 'var(--color-accent)',
