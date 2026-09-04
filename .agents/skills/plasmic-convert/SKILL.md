@@ -1,52 +1,79 @@
-# Skill: plasmic-convert
+---
+name: plasmic-convert
+description: >
+  Convert a React component into a Plasmic code component and complete the
+  full workshop loop: land the file in src/components/plasmic/, auto-register
+  via pnpm plasmic:sync, pass typecheck/lint, and hand back Studio verification
+  steps. Use when the user wants to 把组件转成 plasmic, register 这个组件,
+  加到 plasmic 车间, mentions Plasmic Studio debugging, or hands over component
+  code meant for visual polishing in the workshop.
+---
 
-<!-- trigger: plasmic-convert | 把组件转成 plasmic / register 这个组件 / 转 plasmic 组件 | 让组件进入 Plasmic Studio 可视化调试体系 -->
+# Plasmic Convert
 
-## Purpose
-
-把任意 React 组件代码转换为符合本项目规范的 Plasmic code component，并**完成全部入池动作**（落盘、注册、barrel 导出、校验），形成可在 Plasmic Studio 中直接调试的闭环。
+Convert any React component into a Plasmic code component and complete every
+step needed for it to appear and work inside Plasmic Studio.
 
 ## When to use
 
-- 用户说「把 X 转成 plasmic 组件」「register 这个组件」「加到 plasmic 车间」
-- 用户给出一段组件代码/文件，希望进 Studio 打磨
-- 新组件需要注册进 `plasmic-init-client.tsx` 时
+- User hands over component code (pasted text, a file path, or a URL) and wants
+  it registered for Plasmic Studio debugging
+- A new component needs to enter the workshop directory
+- Any mention of converting/registering a component "for plasmic"
 
 ## Inputs
 
-- 组件源码（用户粘贴、给出文件路径、或给出 URL）
-- 可选：期望的注册名（默认取组件名 camelCase 大写开头）
+- Component source code (required)
+- Optional: desired registration name (defaults to the component name,
+  PascalCase)
 
 ## Procedure
 
-1. **读规范**：先读 `documention/plasmic-code-components.md`（API 全量规范），转换遵循其 §10 提示词的 7 条规则：
-   - 硬编码视觉值 → props + `defaultValue`（默认值必须与原视觉一致）
-   - 根元素挂 `className`
-   - slot 给 `defaultValue` 元素树（§4）；choice 用 `{value,label}[]`
-   - `next/image`→`<img>`、`next/link`→`<a>`（视觉等价替换）
-   - hooks/事件保留；**数据请求、浏览器 API、外部 store/context 改为 props 传入**
-   - 动画（framer-motion/CSS）保留，可加 `motionDisabled` 类开关 prop
-2. **落盘**：写入 `src/components/plasmic/X.tsx`（X = 组件名，Props 用 interface 定义并给字段写 JSDoc）
-3. **注册**：优先跑 `pnpm plasmic:sync`（脚本自动解析 Props 接口并注册 + 更新 barrel，
-   支持 JSDoc 增强：`@plasmic displayName="..." description="..."`、
-   `@plasmic-choice A|B|C`、`@plasmic-slot allowed=A,B`、prop 级
-   `@plasmic displayName/advanced/hidden/defaultValue=`）。
-   脚本无法表达的部分（templates/states/isAttachment/复杂 slot 默认树）再手工追加。
-4. **导出**：`pnpm plasmic:sync` 已同时更新 `src/components/plasmic/index.ts`（手工注册时才需单独补 barrel）
-5. **校验**：`pnpm exec tsc --noEmit` + `pnpm exec eslint "src/components/plasmic/**" "src/plasmic/**"`（零 error 才算过）
-6. **交付说明**（输出给用户，勿省略）：
-   - 注册名 & displayName
-   - 提示：`pnpm dev` → Studio 刷新项目 → Insert 搜 displayName
-   - 提醒：Studio 里的调整不会回写代码，满意后要固化（见 `documention/plasmic-workflow.md` 流程 B）
+1. **Read the spec**: read `documention/plasmic-code-components.md` first.
+   Convert following its §10 rules:
+   - Extract hardcoded visual values into props, each with `defaultValue`
+     (defaults must reproduce the original visuals exactly)
+   - Root element carries `className`
+   - Slots get `defaultValue` element trees (§4); `choice` uses `{value,label}[]`
+   - `next/image` → `<img>`, `next/link` → `<a>` (visually equivalent)
+   - Keep hooks/event logic; move data fetching, browser APIs, and external
+     store/context reads out into props
+   - Keep animations (framer-motion/CSS); optionally add a disable-switch prop
+     such as `motionDisabled`
+2. **Land the file**: write `src/components/plasmic/X.tsx` (X = component
+   name). Props must be a named `interface` with a JSDoc comment on each field.
+3. **Register via script**: run `pnpm plasmic:sync`. It parses the Props
+   interface, maps types to Plasmic metadata (string-literal union → `choice`,
+   `ReactNode` → `slot`, function → `eventHandler`), and only-add updates
+   `plasmic-init-client.tsx` and the barrel export.
+   JSDoc refinements the script understands:
+   - Component level: `@plasmic displayName="..." description="..." section="..."`
+   - Prop level: `@plasmic-choice A|B|C`, `@plasmic-slot allowed=A,B`,
+     `@plasmic displayName="..." advanced hidden defaultValue=x`
+   - What the script cannot express (templates, states, isAttachment, complex
+     slot default trees) must be appended by hand afterwards.
+4. **Barrel export**: `pnpm plasmic:sync` already updates
+   `src/components/plasmic/index.ts`; only add manually when registering by hand.
+5. **Verify**: run `pnpm exec tsc --noEmit` and
+   `pnpm exec eslint "src/components/plasmic/**" "src/plasmic/**"` — zero
+   errors or the step fails.
+6. **Hand back**: always tell the user:
+   - The registration name and displayName
+   - `pnpm dev` → refresh the Studio project → Insert menu → search displayName
+   - Studio edits do not write back to code; polish results must be fixed into
+     the component file (see `documention/plasmic-workflow.md` Flow B)
 
 ## Constraints
 
-- 组件文件**只允许**放 `src/components/plasmic/`
-- 组件必须**视觉自包含**：不 fetch 数据、不读外部 store/context（数据一律 props 进；确需全局状态的用 `registerGlobalContext`，并在交付说明里标注）
-- 不修改 `src/app/(frontend)/plasmic-host/` 和 `src/proxy.ts`（硬规则见 workflow 文档）
-- 已存在同名注册 → 先报告冲突，问用户覆盖还是改名
+- Component files go **only** in `src/components/plasmic/`
+- Components must be visually self-contained: no data fetching, no external
+  store/context reads (data enters via props; use `registerGlobalContext` if
+  global state is truly required, and flag it in the hand-back)
+- Never modify `src/app/(frontend)/plasmic-host/` or `src/proxy.ts`
+- If a registration with the same name exists, report the conflict and ask
+  whether to overwrite or rename
 
 ## References
 
-- `documention/plasmic-code-components.md` — API 规范（必读）
-- `documention/plasmic-workflow.md` — 工作流与硬规则
+- `documention/plasmic-code-components.md` — full API spec (required reading)
+- `documention/plasmic-workflow.md` — workflow and hard rules
