@@ -76,6 +76,7 @@ Off the main flow entirely.
 - **`/code-review`** — two-axis review of a diff (Standards + Spec) against a fixed point.
 - **`/treg-seo`** — live external SEO data gateway (keyword volume/SERP/backlinks/AI visibility) through the treg adapter; each call costs money, check balance first. Own-site GSC data goes through the `gscServer` MCP instead.
 - **`/seo-agent-workflow`** — interactive evidence-led SEO process (new-site roadmap or existing-site diagnosis) with stage documents, keyword/content/technical/external-link playbooks, and data sufficiency gates.
+- **`/plasmic-convert`** — convert any React component into a Plasmic code component and complete the full loop: land it in `src/components/plasmic/`, register it in `plasmic-init-client.tsx`, barrel-export it, and pass typecheck/lint — ready to debug in Plasmic Studio. Use when the user says "转成 plasmic 组件", "register 这个组件", or hands you component code for the workshop.
 
 ## Precondition
 
