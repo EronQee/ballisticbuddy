@@ -67,7 +67,15 @@
 
 **Step 2 — 注册**
 
-打开 `src/plasmic/plasmic-init-client.tsx` 追加：
+**快捷方式（推荐）**：组件 Props 用 TS interface + JSDoc 标记定义后，一条命令完成注册 + barrel：
+
+```bash
+pnpm plasmic:sync
+```
+
+脚本解析 `src/components/plasmic/*.tsx` 的 Props 接口 → 类型启发式映射（string literal union → `choice`、`ReactNode` → `slot`、函数类型 → `eventHandler`…）→ **只增不删**地更新 `plasmic-init-client.tsx` 和 `index.ts`（绝不碰已有注册）。JSDoc 增强：组件级 `@plasmic displayName="..." description="..." section="..."`、prop 级 `@plasmic-choice A|B|C`、`@plasmic-slot allowed=A,B`、`@plasmic displayName/advanced/hidden/defaultValue=x`。CI 可用 `--check`。脚本覆盖不了的（templates/states/isAttachment/复杂 slot 默认树）仍按下方手工方式写。
+
+**手工方式**：打开 `src/plasmic/plasmic-init-client.tsx` 追加：
 
 ```tsx
 import MyThing from '@/components/plasmic/MyThing'

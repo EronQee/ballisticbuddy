@@ -26,9 +26,13 @@
    - `next/image`→`<img>`、`next/link`→`<a>`（视觉等价替换）
    - hooks/事件保留；**数据请求、浏览器 API、外部 store/context 改为 props 传入**
    - 动画（framer-motion/CSS）保留，可加 `motionDisabled` 类开关 prop
-2. **落盘**：写入 `src/components/plasmic/X.tsx`（X = 组件名）
-3. **注册**：在 `src/plasmic/plasmic-init-client.tsx` 追加 `PLASMIC.registerComponent(...)`（放在已有注册之后）
-4. **导出**：在 `src/components/plasmic/index.ts` 追加 barrel 导出
+2. **落盘**：写入 `src/components/plasmic/X.tsx`（X = 组件名，Props 用 interface 定义并给字段写 JSDoc）
+3. **注册**：优先跑 `pnpm plasmic:sync`（脚本自动解析 Props 接口并注册 + 更新 barrel，
+   支持 JSDoc 增强：`@plasmic displayName="..." description="..."`、
+   `@plasmic-choice A|B|C`、`@plasmic-slot allowed=A,B`、prop 级
+   `@plasmic displayName/advanced/hidden/defaultValue=`）。
+   脚本无法表达的部分（templates/states/isAttachment/复杂 slot 默认树）再手工追加。
+4. **导出**：`pnpm plasmic:sync` 已同时更新 `src/components/plasmic/index.ts`（手工注册时才需单独补 barrel）
 5. **校验**：`pnpm exec tsc --noEmit` + `pnpm exec eslint "src/components/plasmic/**" "src/plasmic/**"`（零 error 才算过）
 6. **交付说明**（输出给用户，勿省略）：
    - 注册名 & displayName
